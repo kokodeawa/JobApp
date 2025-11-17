@@ -1,0 +1,6 @@
+{
+  "appId": "com.kokodeawa.workapp",
+  "appName": "WorkApp",
+  "webDir": "build",
+  "bundledWebRuntime": false
+}
