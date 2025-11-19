@@ -1,19 +1,18 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Category, BudgetRecord, DailyExpense, PayCycleConfig, FutureExpense, PayCycleFrequency, CycleProfile, User } from './types';
+import { Category, BudgetRecord, DailyExpense, PayCycleConfig, FutureExpense, PayCycleFrequency, CycleProfile, User, Users } from './types';
 import { INITIAL_CATEGORIES } from './constants';
-import { Header } from './src/components/Header';
-import { GlobalSavingsCard } from './src/components/GlobalSavingsCard';
-import { HistoryView } from './src/components/HistoryView';
-import { BottomNav } from './src/components/BottomNav';
-import { HistoryPanel } from './src/components/HistoryPanel';
-import { BudgetEditorModal } from './src/components/EditBudgetModal';
-import { SideMenu } from './src/components/SideMenu';
-import { DailyExpenseView } from './src/components/DailyExpenseView';
-import { ForceCreateBudgetModal } from './src/components/ForceCreateBudgetModal';
-import { CalculatorsView } from './src/components/CalculatorsView';
-import { DeleteConfirmationModal } from './src/components/DeleteConfirmationModal';
-import { DashboardNotifications } from './src/components/DashboardNotifications';
-import { ProfileCustomizationModal } from './src/components/ProfileCustomizationModal';
+import { Header } from './components/Header';
+import { HistoryView } from './components/HistoryView';
+import { BottomNav } from './components/BottomNav';
+import { HistoryPanel } from './components/HistoryPanel';
+import { BudgetEditorModal } from './components/EditBudgetModal';
+import { SideMenu } from './components/SideMenu';
+import { DailyExpenseView } from './components/DailyExpenseView';
+import { ForceCreateBudgetModal } from './components/ForceCreateBudgetModal';
+import { CalculatorsView } from './components/CalculatorsView';
+import { DeleteConfirmationModal } from './components/DeleteConfirmationModal';
+import { DashboardNotifications } from './components/DashboardNotifications';
+import { ProfileCustomizationModal } from './components/ProfileCustomizationModal';
 
 type ActiveTab = 'dashboard' | 'history' | 'expenses' | 'calculators';
 
@@ -27,28 +26,6 @@ interface CurrentPeriodSpendingProps {
   periodStartDate: Date | null;
   periodEndDate: Date | null;
 }
-
-interface FabActionProps {
-  buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement>, 
-  label: string, 
-  icon: string
-}
-
-const FabAction: React.FC<FabActionProps> = ({ buttonProps, label, icon }) => (
-    <div className="flex items-center gap-3 w-max justify-end">
-        <span className="bg-neutral-700 text-neutral-200 text-xs font-semibold px-3 py-1 rounded-md shadow-md">
-            {label}
-        </span>
-        <button 
-            {...buttonProps}
-            className="bg-white dark:bg-neutral-200 text-gray-800 dark:text-neutral-800 w-10 h-10 rounded-full flex items-center justify-center shadow-md active:bg-gray-200 dark:active:bg-neutral-300"
-            aria-label={label}
-        >
-            <i className={`fa-solid ${icon}`}></i>
-        </button>
-    </div>
-);
-
 
 const CurrentPeriodSpending: React.FC<CurrentPeriodSpendingProps> = ({
   spentByCategory,
@@ -104,56 +81,37 @@ const CurrentPeriodSpending: React.FC<CurrentPeriodSpendingProps> = ({
 export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     // Keys for localStorage
     const KEYS = useMemo(() => ({
+        USERS: 'financial-organizer-users',
         BUDGETS: `financial-organizer-${currentUser}-budgets`,
         GLOBAL_SAVINGS: `financial-organizer-${currentUser}-global-savings`,
         CYCLE_PROFILES: `financial-organizer-${currentUser}-cycle-profiles`,
         ACTIVE_CYCLE_ID: `financial-organizer-${currentUser}-active-cycle-id`,
         ALL_DAILY: `financial-organizer-${currentUser}-all-daily`,
         ALL_FUTURE: `financial-organizer-${currentUser}-all-future`,
-        LAST_CYCLE_CHECK: `financial-organizer-${currentUser}-last-cycle-check`,
+        THEME: 'financial-organizer-theme',
     }), [currentUser]);
 
   // State for tabs
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
-  const [isFabVisible, setIsFabVisible] = useState(true);
-  const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   
   // State for menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // User profile state
+  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Theme state
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
-        const storedTheme = window.localStorage.getItem('financial-organizer-theme') as 'light' | 'dark';
-        return storedTheme || 'dark';
+        const storedTheme = window.localStorage.getItem(KEYS.THEME);
+        return storedTheme === 'light' ? 'light' : 'dark'; // Default to dark
     } catch {
         return 'dark';
     }
   });
 
-  useEffect(() => {
-    const root = window.document.documentElement;
-    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-
-    if (theme === 'light') {
-        root.classList.remove('dark');
-        if (themeColorMeta) themeColorMeta.setAttribute('content', '#f9fafb');
-    } else {
-        root.classList.add('dark');
-        if (themeColorMeta) themeColorMeta.setAttribute('content', '#171717');
-    }
-    try {
-        window.localStorage.setItem('financial-organizer-theme', theme);
-    } catch (error) {
-        console.warn('Could not save theme to localStorage.', error);
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'dark' ? 'light' : 'dark'));
-  };
-  
   // State for budgets and UI
   const [savedBudgets, setSavedBudgets] = useState<BudgetRecord[]>(() => {
     try {
@@ -163,21 +121,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     } catch (error) {
       console.error("Failed to parse budgets from localStorage", error);
       return [];
-    }
-  });
-
-  const [activeBudgetId, setActiveBudgetId] = useState<string | null>(() => {
-     try {
-      const item = window.localStorage.getItem(KEYS.BUDGETS);
-      const budgets = item ? JSON.parse(item) : [];
-      if (Array.isArray(budgets) && budgets.length > 0) {
-        const sorted = [...budgets].sort((a, b) => new Date(b.dateSaved).getTime() - new Date(a.dateSaved).getTime());
-        return sorted[0].id;
-      }
-      return null;
-    } catch (error) {
-      console.error("Failed to parse budgets from localStorage for initial ID", error);
-      return null;
     }
   });
 
@@ -233,14 +176,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     return {};
   });
     
-  const [lastCycleCheckDate, setLastCycleCheckDate] = useState<string | null>(() => {
-    try {
-      return window.localStorage.getItem(KEYS.LAST_CYCLE_CHECK);
-    } catch {
-      return null;
-    }
-  });
-
   // State for the "live" budget based on the current pay cycle
   const [currentCycleBudget, setCurrentCycleBudget] = useState<BudgetRecord | null>(null);
 
@@ -251,65 +186,41 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
   const [forceCreateInfo, setForceCreateInfo] = useState<{ startDate: Date, endDate: Date } | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState<BudgetRecord | null>(null);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-
-  // User Profile State
-  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
   
-  const getUsers = useCallback(() => {
-    try {
-      const users = window.localStorage.getItem('financial-organizer-users');
-      return users ? JSON.parse(users) : {};
-    } catch { return {}; }
-  }, []);
-  
-  useEffect(() => {
-    const users = getUsers();
-    const userData = users[currentUser];
-    if (userData && typeof userData === 'object') {
-        setCurrentUserProfile(userData);
+    // Effect to get user profile on load
+    useEffect(() => {
+        try {
+            const usersData = window.localStorage.getItem(KEYS.USERS);
+            if(usersData) {
+                const users: Users = JSON.parse(usersData);
+                const userData = users[currentUser];
+                if (typeof userData === 'object' && userData !== null) {
+                    setUserProfile(userData);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load user profile:", e);
+        }
+    }, [currentUser, KEYS.USERS]);
+
+    const handleUpdateAvatar = (avatarId: string) => {
+        try {
+             const usersData = window.localStorage.getItem(KEYS.USERS);
+            if(usersData) {
+                const users: Users = JSON.parse(usersData);
+                const userData = users[currentUser];
+                if (typeof userData === 'object' && userData !== null) {
+                    const updatedUser = { ...userData, avatarId };
+                    const updatedUsers = { ...users, [currentUser]: updatedUser };
+                    window.localStorage.setItem(KEYS.USERS, JSON.stringify(updatedUsers));
+                    setUserProfile(updatedUser);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to update avatar:", e);
+        }
+        setIsProfileModalOpen(false);
     }
-  }, [currentUser, getUsers]);
-
-  const handleUpdateAvatar = (avatarId: string) => {
-    const users = getUsers();
-    if (users[currentUser]) {
-      const updatedUser = { ...users[currentUser], avatarId };
-      const updatedUsers = { ...users, [currentUser]: updatedUser };
-      window.localStorage.setItem('financial-organizer-users', JSON.stringify(updatedUsers));
-      setCurrentUserProfile(updatedUser);
-    }
-    setIsProfileModalOpen(false);
-  };
-
-
-  // Scroll effect for FAB
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsFabVisible(false); // Hide on scroll down
-        setIsFabMenuOpen(false); // Also close menu
-      } else {
-        setIsFabVisible(true); // Show on scroll up
-      }
-      lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
-    };
-
-    if (activeTab === 'dashboard') {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-    } else {
-      // If we navigate away, make sure the button is visible for when we come back
-      setIsFabVisible(true);
-    }
-    
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [activeTab]);
 
     // Effect to select first cycle if none is active
     useEffect(() => {
@@ -336,11 +247,17 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
         setAllFutureExpenses(prev => cleanExpenses(prev));
     }, [cycleProfiles]);
 
-
-  // Derived state for the active budget
-  const activeBudget = useMemo(() => {
-    return savedBudgets.find(b => b.id === activeBudgetId);
-  }, [savedBudgets, activeBudgetId]);
+    // Apply theme to HTML element
+    useEffect(() => {
+        const root = window.document.documentElement;
+        root.classList.remove(theme === 'dark' ? 'light' : 'dark');
+        root.classList.add(theme);
+        try {
+            window.localStorage.setItem(KEYS.THEME, theme);
+        } catch (e) {
+             console.warn("Could not save theme to localStorage", e);
+        }
+    }, [theme, KEYS.THEME]);
 
   // Derived state for current expenses (for the active cycle)
   const currentDailyExpenses = useMemo<{ [date: string]: DailyExpense[] }>(() => activeCycleId ? allDailyExpenses[activeCycleId] || {} : {}, [allDailyExpenses, activeCycleId]);
@@ -390,7 +307,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     Object.entries(currentDailyExpenses).forEach(([dateStr, expenses]) => {
       const expenseDate = new Date(`${dateStr}T12:00:00`);
       if (expenseDate >= periodStartDate && expenseDate <= periodEndDate) {
-        // FIX: Cast `expenses` to `DailyExpense[]` to resolve `unknown` type error.
         (expenses as DailyExpense[]).forEach(exp => {
           const entry = spentByCategory.get(exp.categoryId);
           if (entry) {
@@ -463,15 +379,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     window.localStorage.setItem(KEYS.ALL_FUTURE, JSON.stringify(allFutureExpenses));
   }, [allFutureExpenses, KEYS.ALL_FUTURE]);
 
-  useEffect(() => {
-    if (lastCycleCheckDate) {
-      window.localStorage.setItem(KEYS.LAST_CYCLE_CHECK, lastCycleCheckDate);
-    } else {
-      window.localStorage.removeItem(KEYS.LAST_CYCLE_CHECK);
-    }
-  }, [lastCycleCheckDate, KEYS.LAST_CYCLE_CHECK]);
-
-
   // Handlers for budget creation, update, and deletion
   const handleSaveNewBudget = (newBudgetData: Omit<BudgetRecord, 'id'>) => {
     const newBudget: BudgetRecord = {
@@ -480,7 +387,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     };
     const updatedBudgets = [...savedBudgets, newBudget];
     setSavedBudgets(updatedBudgets);
-    setActiveBudgetId(newBudget.id); // Set the new budget as active
   };
 
   const handleUpdateBudget = (updatedBudget: BudgetRecord) => {
@@ -497,15 +403,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
       const newBudgets = savedBudgets.filter(b => b.id !== budgetToDelete.id);
       setSavedBudgets(newBudgets);
       
-      // If the deleted budget was active, select a new one
-      if (activeBudgetId === budgetToDelete.id) {
-        if (newBudgets.length > 0) {
-          const sorted = [...newBudgets].sort((a, b) => new Date(b.dateSaved).getTime() - new Date(a.dateSaved).getTime());
-          setActiveBudgetId(sorted[0].id);
-        } else {
-          setActiveBudgetId(null);
-        }
-      }
       setIsDeleteModalOpen(false);
       setBudgetToDelete(null);
     }
@@ -532,7 +429,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
 
   const handleConfirmForceCreate = () => {
     if (activeCycleConfig && periodStartDate && periodEndDate) {
-      // FIX: Add explicit type to `allExpensesInCycle` to ensure correct type inference later.
       const allExpensesInCycle: { [date: string]: DailyExpense[] } = { ...currentDailyExpenses };
 
       // Add future expenses to the daily list for calculation
@@ -559,7 +455,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
 
       const categoryAmounts = new Map<string, number>();
       Object.values(allExpensesInCycle).flat().forEach(exp => {
-        // FIX: Cast exp to DailyExpense to allow property access, as it was inferred as 'unknown'.
         const dailyExpense = exp as DailyExpense;
         categoryAmounts.set(dailyExpense.categoryId, (categoryAmounts.get(dailyExpense.categoryId) || 0) + dailyExpense.amount);
       });
@@ -591,144 +486,110 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
   };
 
 
-  const FAB_ACTIONS = [
-    { id: 'add_cycle', label: 'Añadir Calendario', icon: 'fa-calendar-plus', action: () => { setPendingAction('add_cycle'); setActiveTab('expenses'); } },
-    { id: 'add_daily_expense', label: 'Gasto Diario', icon: 'fa-cash-register', action: () => { setPendingAction('add_daily_expense'); setActiveTab('expenses'); } },
-    { id: 'add_future_expense', label: 'Gasto Planificado', icon: 'fa-clock', action: () => { setPendingAction('add_future_expense'); setActiveTab('expenses'); } },
-    { id: 'add_budget', label: 'Presupuesto Rápido', icon: 'fa-file-invoice-dollar', action: handleCreateNewBudget },
-  ];
-
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header activeTab={activeTab} onTabChange={setActiveTab} onMenuClick={() => setIsMenuOpen(true)} />
-      <SideMenu 
-        isOpen={isMenuOpen} 
-        onClose={() => setIsMenuOpen(false)} 
-        currentUser={currentUser} 
-        onLogout={onLogout}
-        avatarId={currentUserProfile?.avatarId || '0'}
-        onOpenProfileEditor={() => setIsProfileModalOpen(true)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-      <main className="flex-grow container mx-auto px-4 md:px-8 py-8 pb-24 md:pb-8">
-        {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-               <CurrentPeriodSpending 
-                  spentByCategory={currentPeriodSpending} 
-                  periodStartDate={periodStartDate}
-                  periodEndDate={periodEndDate}
+    <div className={theme}>
+      <div className="bg-gray-50 dark:bg-neutral-900 text-gray-900 dark:text-neutral-100 min-h-screen">
+        <Header activeTab={activeTab} onTabChange={setActiveTab} onMenuClick={() => setIsMenuOpen(true)} />
+        <SideMenu 
+            isOpen={isMenuOpen} 
+            onClose={() => setIsMenuOpen(false)} 
+            currentUser={currentUser} 
+            onLogout={onLogout}
+            avatarId={userProfile?.avatarId || '0'}
+            onOpenProfileEditor={() => setIsProfileModalOpen(true)}
+            theme={theme}
+            onToggleTheme={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+        />
+        <main className="container mx-auto px-4 md:px-8 py-8 pb-24 md:pb-8">
+            {activeTab === 'dashboard' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                <CurrentPeriodSpending 
+                    spentByCategory={currentPeriodSpending} 
+                    periodStartDate={periodStartDate}
+                    periodEndDate={periodEndDate}
+                    />
+                </div>
+                <div className="lg:col-span-1 space-y-6">
+                  <DashboardNotifications 
+                    allDailyExpenses={allDailyExpenses}
+                    allFutureExpenses={allFutureExpenses}
+                    categories={INITIAL_CATEGORIES}
+                    cycleProfiles={cycleProfiles}
+                  />
+                  <HistoryPanel
+                      budgets={savedBudgets}
+                      activeBudgetId={null}
+                      onOpenDeleteModal={openDeleteModal}
+                      onCreateNew={handleCreateNewBudget}
+                      onEditBudget={handleEditBudget}
+                  />
+                </div>
+            </div>
+            )}
+            {activeTab === 'history' && (
+                <HistoryView 
+                    budgets={savedBudgets} 
+                    globalSavings={globalSavings}
+                    onUpdateGlobalSavings={setGlobalSavings}
+                    onEditBudget={handleEditBudget}
+                    onOpenDeleteModal={openDeleteModal}
                 />
-            </div>
-            <div className="lg:col-span-1 space-y-6">
-              <DashboardNotifications 
-                allDailyExpenses={allDailyExpenses}
-                allFutureExpenses={allFutureExpenses}
+            )}
+            {activeTab === 'expenses' && (
+            <DailyExpenseView
+                expenses={currentDailyExpenses}
+                setExpenses={setCurrentDailyExpenses}
                 categories={INITIAL_CATEGORIES}
+                onForceCreateBudget={handleForceCreateBudget}
+                futureExpenses={currentFutureExpenses}
+                setFutureExpenses={setCurrentFutureExpenses}
+                currentCycleBudget={currentCycleBudget}
                 cycleProfiles={cycleProfiles}
-              />
-              <HistoryPanel
-                  budgets={savedBudgets}
-                  activeBudgetId={activeBudgetId}
-                  onOpenDeleteModal={openDeleteModal}
-                  onCreateNew={handleCreateNewBudget}
-                  onEditBudget={handleEditBudget}
-              />
-            </div>
-          </div>
-        )}
-        {activeTab === 'history' && (
-            <HistoryView 
-                budgets={savedBudgets} 
-                globalSavings={globalSavings}
-                onUpdateGlobalSavings={setGlobalSavings}
-                onEditBudget={handleEditBudget}
-                onOpenDeleteModal={openDeleteModal}
+                setCycleProfiles={setCycleProfiles}
+                activeCycleId={activeCycleId}
+                setActiveCycleId={setActiveCycleId}
+                pendingAction={pendingAction}
+                onActionHandled={() => setPendingAction(null)}
+            />
+            )}
+            {activeTab === 'calculators' && (
+            <CalculatorsView />
+            )}
+        </main>
+        
+        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+        <BudgetEditorModal
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+            onSave={handleSaveNewBudget}
+            onUpdate={handleUpdateBudget}
+            budget={editingBudget}
+        />
+        <ForceCreateBudgetModal
+            isOpen={isForceCreateModalOpen}
+            onClose={() => setIsForceCreateModalOpen(false)}
+            onConfirm={handleConfirmForceCreate}
+            cycleStartDate={forceCreateInfo?.startDate || null}
+            cycleEndDate={forceCreateInfo?.endDate || null}
+        />
+        {budgetToDelete && (
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                budgetName={budgetToDelete.name}
+                budgetDate={budgetToDelete.dateSaved}
             />
         )}
-        {activeTab === 'expenses' && (
-          <DailyExpenseView
-            expenses={currentDailyExpenses}
-            setExpenses={setCurrentDailyExpenses}
-            categories={INITIAL_CATEGORIES}
-            onForceCreateBudget={handleForceCreateBudget}
-            futureExpenses={currentFutureExpenses}
-            setFutureExpenses={setCurrentFutureExpenses}
-            currentCycleBudget={currentCycleBudget}
-            cycleProfiles={cycleProfiles}
-            setCycleProfiles={setCycleProfiles}
-            activeCycleId={activeCycleId}
-            setActiveCycleId={setActiveCycleId}
-            pendingAction={pendingAction}
-            onActionHandled={() => setPendingAction(null)}
-          />
-        )}
-        {activeTab === 'calculators' && (
-          <CalculatorsView />
-        )}
-      </main>
-
-       {/* FAB */}
-      <div className={`fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 transition-all duration-300 ${isFabVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}>
-          <div className="relative flex flex-col items-end gap-3">
-              <div className={`transition-all duration-300 ease-in-out ${isFabMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                  <div className="flex flex-col items-end gap-3">
-                      {FAB_ACTIONS.map(action => (
-                          <FabAction 
-                            key={action.id}
-                            label={action.label} 
-                            icon={action.icon}
-                            buttonProps={{ onClick: () => { action.action(); setIsFabMenuOpen(false); } }} 
-                          />
-                      ))}
-                  </div>
-              </div>
-              <button 
-                  onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}
-                  className="bg-blue-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 active:scale-90"
-                  aria-haspopup="true"
-                  aria-expanded={isFabMenuOpen}
-                  aria-label="Abrir menú de acciones rápidas"
-              >
-                  <i className={`fa-solid ${isFabMenuOpen ? 'fa-times' : 'fa-plus'} text-2xl transition-transform duration-300 ${isFabMenuOpen ? 'rotate-180' : ''}`}></i>
-              </button>
-          </div>
-      </div>
-
-
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* Modals */}
-      <BudgetEditorModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSave={handleSaveNewBudget}
-        onUpdate={handleUpdateBudget}
-        budget={editingBudget}
-      />
-      <ForceCreateBudgetModal
-        isOpen={isForceCreateModalOpen}
-        onClose={() => setIsForceCreateModalOpen(false)}
-        onConfirm={handleConfirmForceCreate}
-        cycleStartDate={forceCreateInfo?.startDate || null}
-        cycleEndDate={forceCreateInfo?.endDate || null}
-      />
-      {budgetToDelete && (
-        <DeleteConfirmationModal
-            isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
-            onConfirm={handleConfirmDelete}
-            budgetName={budgetToDelete.name}
-            budgetDate={budgetToDelete.dateSaved}
+        <ProfileCustomizationModal 
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
+            currentAvatarId={userProfile?.avatarId || '0'}
+            onSelectAvatar={handleUpdateAvatar}
         />
-      )}
-       <ProfileCustomizationModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-        currentAvatarId={currentUserProfile?.avatarId || '0'}
-        onSelectAvatar={handleUpdateAvatar}
-      />
+      </div>
     </div>
   );
 };

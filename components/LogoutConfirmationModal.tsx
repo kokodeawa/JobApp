@@ -26,20 +26,20 @@ export const LogoutConfirmationModal: React.FC<LogoutConfirmationModalProps> = (
       role="dialog"
     >
       <div
-        className="bg-neutral-800 rounded-2xl shadow-xl p-8 w-full max-w-md m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale text-center"
+        className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-8 w-full max-w-md m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale text-center"
         onClick={e => e.stopPropagation()}
       >
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900/50 mb-4">
-            <i className="fa-solid fa-right-from-bracket text-2xl text-red-400"></i>
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/50 mb-4">
+            <i className="fa-solid fa-right-from-bracket text-2xl text-red-500 dark:text-red-400"></i>
         </div>
-        <h2 className="text-2xl font-bold mb-2 text-neutral-100">Cerrar Sesión</h2>
-        <p className="text-neutral-300 mb-6">
+        <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-neutral-100">Cerrar Sesión</h2>
+        <p className="text-gray-600 dark:text-neutral-300 mb-6">
           ¿Estás seguro de que quieres cerrar tu sesión? Tendrás que volver a introducir tus credenciales para acceder.
         </p>
         <div className="mt-8 flex justify-center space-x-4">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-lg bg-neutral-600 text-neutral-200 active:bg-neutral-500 font-semibold transition-colors"
+            className="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-neutral-200 active:bg-gray-300 dark:active:bg-neutral-500 font-semibold transition-colors"
           >
             Cancelar
           </button>

@@ -12,11 +12,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
     `flex-1 flex flex-col items-center justify-center p-2 transition-colors text-sm ${
       activeTab === tabName
         ? 'text-blue-500'
-        : 'text-neutral-400 active:text-blue-500'
+        : 'text-gray-500 dark:text-neutral-400 active:text-blue-500'
     }`;
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-neutral-900/80 backdrop-blur-lg border-t border-neutral-700 flex justify-around items-center z-20">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-neutral-700 flex justify-around items-center z-20">
       <button onClick={() => onTabChange('dashboard')} className={navButtonClasses('dashboard')}>
         <i className="fa-solid fa-table-columns text-xl mb-1"></i>
         <span>Dashboard</span>

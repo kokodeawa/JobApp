@@ -38,16 +38,16 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ options, value, onCh
 
   return (
     <div className={`relative ${className}`} ref={selectRef}>
-      {label && <label className="text-sm font-bold text-neutral-300 mb-1 block">{label}</label>}
+      {label && <label className="text-sm font-bold text-gray-700 dark:text-neutral-300 mb-1 block">{label}</label>}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-3 bg-neutral-700 text-white border-2 border-neutral-600 rounded-lg text-lg font-semibold text-left flex justify-between items-center"
+        className="w-full p-3 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-neutral-600 rounded-lg text-lg font-semibold text-left flex justify-between items-center"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
         <span>{selectedOption ? selectedOption.label : 'Seleccionar...'}</span>
-        <i className={`fa-solid fa-chevron-down text-sm text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
+        <i className={`fa-solid fa-chevron-down text-sm text-gray-500 dark:text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
 
       {isOpen && (
@@ -58,13 +58,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ options, value, onCh
             aria-hidden="true"
           />
           <div
-            className="fixed bottom-0 left-0 w-full bg-neutral-800 rounded-t-2xl shadow-lg z-50 p-4 animate-slide-up
+            className="fixed bottom-0 left-0 w-full bg-white dark:bg-neutral-800 rounded-t-2xl shadow-lg z-50 p-4 animate-slide-up
                        md:absolute md:top-full md:mt-2 md:bottom-auto md:w-full md:rounded-lg md:animate-fade-in-sm"
             role="listbox"
           >
             <div className="flex justify-between items-center mb-4 md:hidden">
-              <h3 className="text-lg font-bold text-neutral-200">{label || 'Seleccionar opción'}</h3>
-              <button type="button" onClick={() => setIsOpen(false)} className="p-2 -mr-2 text-neutral-400">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-neutral-200">{label || 'Seleccionar opción'}</h3>
+              <button type="button" onClick={() => setIsOpen(false)} className="p-2 -mr-2 text-gray-500 dark:text-neutral-400">
                 <i className="fa-solid fa-times text-xl"></i>
               </button>
             </div>
@@ -77,7 +77,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ options, value, onCh
                     className={`w-full text-left p-3 rounded-lg text-base transition-colors ${
                       value === option.value
                         ? 'bg-blue-600 text-white font-bold'
-                        : 'text-neutral-200 active:bg-neutral-700'
+                        : 'text-gray-800 dark:text-neutral-200 active:bg-gray-100 dark:active:bg-neutral-700'
                     }`}
                     role="option"
                     aria-selected={value === option.value}

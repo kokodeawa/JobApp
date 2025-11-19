@@ -123,14 +123,14 @@ export const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
     }, [allFutureExpenses]);
 
     return (
-        <div className="bg-neutral-800 p-6 rounded-3xl shadow-lg space-y-4 self-start">
-            <h2 className="text-2xl font-bold text-neutral-100 border-b border-neutral-700 pb-3">Actividad Reciente</h2>
+        <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg space-y-4 self-start">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 border-b border-gray-200 dark:border-neutral-700 pb-3">Actividad Reciente</h2>
 
             {upcomingExpenses.length > 0 && (
-                <div className="bg-amber-900/50 border border-amber-700 p-3 rounded-lg flex items-start gap-3">
-                    <i className="fa-solid fa-bell text-amber-400 mt-1"></i>
+                <div className="bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-700 p-3 rounded-lg flex items-start gap-3">
+                    <i className="fa-solid fa-bell text-amber-500 dark:text-amber-400 mt-1"></i>
                     <div>
-                        <p className="text-sm font-semibold text-amber-300">Próximos Vencimientos (3 días)</p>
+                        <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">Próximos Vencimientos (3 días)</p>
                         <div className="space-y-1 mt-1">
                             {upcomingExpenses.map(exp => {
                                 const today = new Date();
@@ -142,8 +142,8 @@ export const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
 
                                 return (
                                     <div key={`${exp.id}-${exp.date.toISOString()}`}>
-                                        <p className="font-bold text-neutral-100 text-sm">{exp.note} - ${exp.amount.toFixed(2)}</p>
-                                        <p className="text-xs text-amber-400">{dueText} - {exp.date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}</p>
+                                        <p className="font-bold text-gray-800 dark:text-neutral-100 text-sm">{exp.note} - ${exp.amount.toFixed(2)}</p>
+                                        <p className="text-xs text-amber-600 dark:text-amber-400">{dueText} - {exp.date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}</p>
                                     </div>
                                 );
                             })}
@@ -153,12 +153,12 @@ export const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
             )}
             
             {nextPlannedExpense && (
-                <div className="bg-blue-900/50 p-3 rounded-lg flex items-start gap-3">
-                    <i className="fa-solid fa-flag text-blue-400 mt-1"></i>
+                <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg flex items-start gap-3">
+                    <i className="fa-solid fa-flag text-blue-500 dark:text-blue-400 mt-1"></i>
                     <div>
-                        <p className="text-sm font-semibold text-blue-300">Próximo Gasto Planificado</p>
-                        <p className="font-bold text-neutral-100">{nextPlannedExpense.note} - ${nextPlannedExpense.amount.toFixed(2)}</p>
-                        <p className="text-xs text-blue-400">{nextPlannedExpense.date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                        <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">Próximo Gasto Planificado</p>
+                        <p className="font-bold text-gray-800 dark:text-neutral-100">{nextPlannedExpense.note} - ${nextPlannedExpense.amount.toFixed(2)}</p>
+                        <p className="text-xs text-blue-600 dark:text-blue-400">{nextPlannedExpense.date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
                     </div>
                 </div>
             )}
@@ -168,28 +168,28 @@ export const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
                     recentActivity.map(exp => {
                         const category = categoryMap.get(exp.categoryId);
                         return (
-                            <div key={exp.id} className="flex items-center gap-4 p-3 bg-neutral-700/50 rounded-lg">
+                            <div key={exp.id} className="flex items-center gap-4 p-3 bg-gray-100 dark:bg-neutral-700/50 rounded-lg">
                                 <div className="flex-shrink-0">
                                     {category ? (
                                         <i className={`${category.icon} fa-fw text-xl`} style={{ color: category.color }}></i>
                                     ) : (
-                                        <i className="fa-solid fa-question-circle fa-fw text-xl text-neutral-500"></i>
+                                        <i className="fa-solid fa-question-circle fa-fw text-xl text-gray-400 dark:text-neutral-500"></i>
                                     )}
                                 </div>
                                 <div className="flex-grow">
-                                    <p className="font-semibold text-neutral-200">{exp.note || category?.name}</p>
-                                    <p className="text-xs text-neutral-400">
+                                    <p className="font-semibold text-gray-800 dark:text-neutral-200">{exp.note || category?.name}</p>
+                                    <p className="text-xs text-gray-500 dark:text-neutral-400">
                                         {timeAgo(exp.date)} &bull; {exp.cycleName}
                                     </p>
                                 </div>
-                                <div className="font-bold text-red-400 text-lg">
+                                <div className="font-bold text-red-500 dark:text-red-400 text-lg">
                                     -${exp.amount.toFixed(2)}
                                 </div>
                             </div>
                         );
                     })
                 ) : (
-                    <p className="text-center text-neutral-500 py-4">No hay gastos recientes. ¡Añade uno en la pestaña de Gastos!</p>
+                    <p className="text-center text-gray-500 dark:text-neutral-500 py-4">No hay gastos recientes. ¡Añade uno en la pestaña de Gastos!</p>
                 )}
             </div>
         </div>

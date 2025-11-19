@@ -16,7 +16,7 @@ export const BudgetChart: React.FC<BudgetChartProps> = ({ data, totalIncome }) =
 
   if (data.length === 0 || totalAllocated === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-neutral-500">
+      <div className="flex items-center justify-center h-full text-gray-500 dark:text-neutral-500">
         <p>Añade gastos para ver la distribución.</p>
       </div>
     );
@@ -37,11 +37,11 @@ export const BudgetChart: React.FC<BudgetChartProps> = ({ data, totalIncome }) =
             <div className="flex justify-between items-center mb-1">
               <div className="flex items-center space-x-2">
                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.fill }}></span>
-                 <span className="text-sm font-medium text-neutral-300">{entry.name}</span>
+                 <span className="text-sm font-medium text-gray-600 dark:text-neutral-300">{entry.name}</span>
               </div>
-              <span className="text-sm font-bold text-neutral-100">${entry.value.toFixed(2)}</span>
+              <span className="text-sm font-bold text-gray-800 dark:text-neutral-100">${entry.value.toFixed(2)}</span>
             </div>
-            <div className="w-full bg-neutral-700 rounded-full h-2.5">
+            <div className="w-full bg-gray-200 dark:bg-neutral-700 rounded-full h-2.5">
               <div 
                 className="h-2.5 rounded-full transition-all duration-500"
                 style={{ width: `${percentage}%`, backgroundColor: entry.fill }}
@@ -55,17 +55,17 @@ export const BudgetChart: React.FC<BudgetChartProps> = ({ data, totalIncome }) =
         );
       })}
 
-      {data.length > 0 && <hr className="border-neutral-700 !my-5" />}
+      {data.length > 0 && <hr className="border-gray-200 dark:border-neutral-700 !my-5" />}
       
       <div aria-label={`${totalData.name}: ${totalData.value.toFixed(2)} (${totalData.percentage.toFixed(1)}% del ingreso)`}>
         <div className="flex justify-between items-center mb-1">
           <div className="flex items-center space-x-2">
-             <span className="text-sm font-bold text-neutral-100">{totalData.name}</span>
+             <span className="text-sm font-bold text-gray-800 dark:text-neutral-100">{totalData.name}</span>
           </div>
-          <span className="text-sm font-bold text-neutral-100">${totalData.value.toFixed(2)}</span>
+          <span className="text-sm font-bold text-gray-800 dark:text-neutral-100">${totalData.value.toFixed(2)}</span>
         </div>
         <div 
-            className="w-full bg-neutral-700 rounded-full h-2.5 flex overflow-hidden"
+            className="w-full bg-gray-200 dark:bg-neutral-700 rounded-full h-2.5 flex overflow-hidden"
             role="progressbar"
             aria-valuenow={totalData.percentage}
             aria-valuemin={0}

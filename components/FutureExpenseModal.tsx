@@ -102,11 +102,11 @@ export const FutureExpenseModal: React.FC<FutureExpenseModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4" onClick={onClose}>
-      <div className="bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
-        <h2 className="text-xl font-bold mb-4 text-neutral-100">{expense ? 'Editar' : 'Añadir'} Gasto Planificado</h2>
+      <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-neutral-100">{expense ? 'Editar' : 'Añadir'} Gasto Planificado</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="Nota (ej. Renta, Netflix)" className="w-full p-2 bg-neutral-700 text-white border border-neutral-600 rounded-lg" required />
-          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Importe" className="w-full p-2 bg-neutral-700 text-white border border-neutral-600 rounded-lg" min="0.01" step="0.01" required />
+          <input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="Nota (ej. Renta, Netflix)" className="w-full p-2 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border border-gray-200 dark:border-neutral-600 rounded-lg" required />
+          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Importe" className="w-full p-2 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border border-gray-200 dark:border-neutral-600 rounded-lg" min="0.01" step="0.01" required />
            <CustomSelect
               options={categoryOptions}
               value={categoryId}
@@ -123,17 +123,17 @@ export const FutureExpenseModal: React.FC<FutureExpenseModalProps> = ({
             />
           </div>
           <div>
-            <label className="text-sm text-neutral-400">Fecha de inicio</label>
-            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 bg-neutral-700 text-white border border-neutral-600 rounded-lg" required />
+            <label className="text-sm text-gray-500 dark:text-neutral-400">Fecha de inicio</label>
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border border-gray-200 dark:border-neutral-600 rounded-lg" required />
           </div>
           {frequency !== 'una-vez' && (
             <div>
-              <label className="text-sm text-neutral-400">Fecha de fin (opcional)</label>
-              <input type="date" value={endDate || ''} onChange={e => setEndDate(e.target.value || null)} className="w-full p-2 bg-neutral-700 text-white border border-neutral-600 rounded-lg" />
+              <label className="text-sm text-gray-500 dark:text-neutral-400">Fecha de fin (opcional)</label>
+              <input type="date" value={endDate || ''} onChange={e => setEndDate(e.target.value || null)} className="w-full p-2 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border border-gray-200 dark:border-neutral-600 rounded-lg" />
             </div>
           )}
           <div className="flex justify-end space-x-3 pt-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg bg-neutral-600 text-neutral-200 active:bg-neutral-500 font-semibold">Cancelar</button>
+            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-neutral-200 active:bg-gray-300 dark:active:bg-neutral-500 font-semibold">Cancelar</button>
             <button type="submit" className="px-4 py-2 rounded-lg bg-blue-600 active:bg-blue-700 text-white font-bold">{expense ? 'Actualizar' : 'Guardar'}</button>
           </div>
         </form>

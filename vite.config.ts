@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => ({
+export default defineConfig({
+  base: '/JobApp/',
   plugins: [
     react(),
     VitePWA({
@@ -20,12 +21,12 @@ export default defineConfig(({ command }) => ({
         theme_color: '#171717',
         background_color: '#171717',
         display: 'standalone',
-        scope: command === 'build' ? '/WAPP/' : '/',
-        start_url: command === 'build' ? '/WAPP/' : '/',
+        scope: '/JobApp/',
+        start_url: '/JobApp/',
         icons: [
           {
             src: 'icon.svg',
-            sizes: '192x192 512x512',
+            sizes: '192x192 512x12',
             type: 'image/svg+xml',
             purpose: 'any',
           },
@@ -39,4 +40,4 @@ export default defineConfig(({ command }) => ({
       },
     }),
   ],
-}));
+});

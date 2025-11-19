@@ -68,29 +68,36 @@ const CycleEditor: React.FC<CycleEditorProps> = ({ profile, onUpdate, onInitiate
     ];
     
     return (
-        <div className="bg-neutral-700 rounded-lg p-3">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 flex-grow">
+        <div className="bg-gray-100 dark:bg-neutral-700 rounded-lg p-3">
+            <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={onExpandToggle}
+            >
+                <div className="flex items-center gap-2 flex-grow pointer-events-none">
                     <span className="w-3 h-3 rounded-full" style={{ backgroundColor: isExpanded ? color : profile.color }}></span>
-                    <p className="font-semibold">{profile.name}</p>
+                    <p className="font-semibold text-gray-800 dark:text-neutral-200">{profile.name}</p>
                 </div>
                 <div className="flex items-center gap-1">
-                     <button onClick={onExpandToggle} className="p-2 w-8 h-8 rounded-lg active:bg-neutral-600 text-blue-400"><i className={`fa-solid fa-chevron-down transition-transform ${isExpanded ? 'rotate-180' : ''}`}></i></button>
-                     <button onClick={() => onInitiateDelete(profile.id)} className="p-2 w-8 h-8 rounded-lg active:bg-neutral-600 text-red-400"><i className="fa-solid fa-trash-can"></i></button>
+                     <span className="p-2 w-8 h-8 flex items-center justify-center text-blue-500 dark:text-blue-400 pointer-events-none">
+                        <i className={`fa-solid fa-chevron-down transition-transform ${isExpanded ? 'rotate-180' : ''}`}></i>
+                     </span>
+                     <button onClick={(e) => { e.stopPropagation(); onInitiateDelete(profile.id); }} className="p-2 w-8 h-8 rounded-lg active:bg-gray-200 dark:active:bg-neutral-600 text-red-500 dark:text-red-400">
+                        <i className="fa-solid fa-trash-can"></i>
+                     </button>
                 </div>
             </div>
             {isExpanded && (
-                <div className="mt-4 pt-4 border-t border-neutral-600 space-y-4">
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del Calendario" className="w-full p-2 bg-neutral-600 rounded" />
+                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-600 space-y-4">
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del Calendario" className="w-full p-2 bg-gray-200 dark:bg-neutral-600 rounded text-gray-900 dark:text-white" />
                     <div className="flex justify-around">
                         {colors.map(c => (
-                            <button key={c} onClick={() => setColor(c)} className={`w-6 h-6 rounded-full transition-transform ${color === c ? 'ring-2 ring-white scale-110' : ''}`} style={{ backgroundColor: c }}></button>
+                            <button key={c} onClick={() => setColor(c)} className={`w-6 h-6 rounded-full transition-transform ${color === c ? 'ring-2 ring-blue-500 dark:ring-white scale-110' : ''}`} style={{ backgroundColor: c }}></button>
                         ))}
                     </div>
-                    <h4 className="font-bold text-sm pt-2">Configuración de Pagos (Opcional)</h4>
+                    <h4 className="font-bold text-sm pt-2 text-gray-800 dark:text-neutral-200">Configuración de Pagos (Opcional)</h4>
                     <CustomSelect options={frequencyOptions} value={frequency} onChange={(v) => setFrequency(v as PayCycleFrequency)} />
-                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 bg-neutral-600 rounded" />
-                    <input type="number" value={income} onChange={e => setIncome(e.target.value)} placeholder="Ingreso por ciclo" className="w-full p-2 bg-neutral-600 rounded" />
+                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 bg-gray-200 dark:bg-neutral-600 rounded text-gray-900 dark:text-white" />
+                    <input type="number" value={income} onChange={e => setIncome(e.target.value)} placeholder="Ingreso por ciclo" className="w-full p-2 bg-gray-200 dark:bg-neutral-600 rounded text-gray-900 dark:text-white" />
                     <button onClick={handleSave} className="w-full bg-blue-600 text-white font-bold py-2 rounded-lg">Guardar Cambios</button>
                 </div>
             )}
@@ -153,8 +160,8 @@ export const CycleSettingsModal: React.FC<CycleSettingsModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4" onClick={onClose}>
-            <div className="bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-md max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
-                <h2 className="text-2xl font-bold mb-4 text-neutral-100">Gestionar Calendarios</h2>
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-md max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-neutral-100">Gestionar Calendarios</h2>
                 <div className="space-y-3 flex-grow overflow-y-auto pr-2 -mr-2">
                     {profiles.map(profile => (
                         <CycleEditor
@@ -168,11 +175,11 @@ export const CycleSettingsModal: React.FC<CycleSettingsModalProps> = ({
                     ))}
                 </div>
                 {initialExpandedId === null && (
-                     <div className="mt-4 pt-4 border-t border-neutral-700 space-y-3">
+                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-neutral-700 space-y-3">
                         <button onClick={handleAddCycle} className="w-full bg-green-600 text-white font-bold py-2 rounded-lg">
                             <i className="fa-solid fa-plus mr-2"></i>Añadir Nuevo Calendario
                         </button>
-                        <button onClick={onClose} className="w-full bg-neutral-600 text-white font-bold py-2 rounded-lg">Cerrar</button>
+                        <button onClick={onClose} className="w-full bg-gray-500 dark:bg-neutral-600 text-white font-bold py-2 rounded-lg">Cerrar</button>
                     </div>
                 )}
             </div>

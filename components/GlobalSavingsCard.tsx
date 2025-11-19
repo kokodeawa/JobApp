@@ -37,14 +37,14 @@ export const GlobalSavingsCard: React.FC<GlobalSavingsCardProps> = ({ value, onS
 
 
   return (
-    <div className="bg-neutral-800 p-5 rounded-3xl shadow-lg flex flex-col items-start space-y-3">
-      <div className={`text-2xl w-12 h-12 rounded-xl flex items-center justify-center bg-teal-900/50 text-teal-400`}>
+    <div className="bg-white dark:bg-neutral-800 p-5 rounded-3xl shadow-lg flex flex-col items-start space-y-3">
+      <div className={`text-2xl w-12 h-12 rounded-xl flex items-center justify-center bg-teal-100 dark:bg-teal-900/50 text-teal-500 dark:text-teal-400`}>
         <i className="fa-solid fa-vault"></i>
       </div>
       <div className="text-left w-full">
         <div className="flex justify-between items-center">
-             <p className="text-sm text-neutral-400 font-medium">Ahorro Global</p>
-             <button onClick={() => setIsEditing(!isEditing)} className="text-xs text-neutral-500 active:text-blue-400">
+             <p className="text-sm text-gray-500 dark:text-neutral-400 font-medium">Ahorro Global</p>
+             <button onClick={() => setIsEditing(!isEditing)} className="text-xs text-gray-400 dark:text-neutral-500 active:text-blue-500 dark:active:text-blue-400">
                 <i className={`fa-solid ${isEditing ? 'fa-times' : 'fa-pencil'}`}></i>
              </button>
         </div>
@@ -55,11 +55,11 @@ export const GlobalSavingsCard: React.FC<GlobalSavingsCardProps> = ({ value, onS
                 onChange={(e) => setInputValue(e.target.value)}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
-                className="text-3xl font-bold text-neutral-100 bg-transparent w-full focus:outline-none focus:ring-0 border-b border-blue-500"
+                className="text-3xl font-bold text-gray-900 dark:text-neutral-100 bg-transparent w-full focus:outline-none focus:ring-0 border-b border-blue-500"
                 autoFocus
             />
         ) : (
-            <p className="text-3xl font-bold text-neutral-100">${value.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-neutral-100">${value.toFixed(2)}</p>
         )}
       </div>
     </div>

@@ -37,39 +37,39 @@ export const CurrentCycleBudgetView: React.FC<CurrentCycleBudgetViewProps> = ({ 
       role="dialog"
     >
       <div
-        className="bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-2xl m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale max-h-[90vh] flex flex-col"
+        className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-2xl m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
       >
         {budget ? (
           <>
-            <div className="flex justify-between items-center mb-4 flex-shrink-0 border-b border-neutral-700 pb-4">
-              <h2 className="text-2xl font-bold text-neutral-100">Presupuesto del Ciclo Actual</h2>
-              <button onClick={onClose} className="p-2 rounded-full active:bg-neutral-700" aria-label="Cerrar vista de presupuesto">
+            <div className="flex justify-between items-center mb-4 flex-shrink-0 border-b border-gray-200 dark:border-neutral-700 pb-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100">Presupuesto del Ciclo Actual</h2>
+              <button onClick={onClose} className="p-2 rounded-full text-gray-600 dark:text-neutral-300 active:bg-gray-200 dark:active:bg-neutral-700" aria-label="Cerrar vista de presupuesto">
                 <i className="fa-solid fa-times text-xl"></i>
               </button>
             </div>
             <div className="overflow-y-auto flex-grow pr-2 -mr-2 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <SummaryCard title="Ingreso del Ciclo" value={`$${budget.totalIncome.toFixed(2)}`} icon="fa-solid fa-dollar-sign" color="text-green-500" bgColor="bg-green-900/50 text-green-400" />
-                  <SummaryCard title="Total Gastado" value={`$${totalSpent.toFixed(2)}`} icon="fa-solid fa-coins" color="text-amber-500" bgColor="bg-amber-900/50 text-amber-400" />
-                  <SummaryCard title="Balance Actual" value={`$${balance.toFixed(2)}`} icon="fa-solid fa-wallet" color="text-blue-500" bgColor="bg-blue-900/50 text-blue-400" />
+                  <SummaryCard title="Ingreso del Ciclo" value={`$${budget.totalIncome.toFixed(2)}`} icon="fa-solid fa-dollar-sign" color="text-green-500" bgColor="bg-green-100 dark:bg-green-900/50 text-green-500 dark:text-green-400" />
+                  <SummaryCard title="Total Gastado" value={`$${totalSpent.toFixed(2)}`} icon="fa-solid fa-coins" color="text-amber-500" bgColor="bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400" />
+                  <SummaryCard title="Balance Actual" value={`$${balance.toFixed(2)}`} icon="fa-solid fa-wallet" color="text-blue-500" bgColor="bg-blue-100 dark:bg-blue-900/50 text-blue-500 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-neutral-200 mb-3">Desglose de Gastos</h3>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-neutral-200 mb-3">Desglose de Gastos</h3>
                 <div className="space-y-3">
                   {categoriesWithData.length > 0 ? categoriesWithData.map(cat => (
-                    <div key={cat.id} className="bg-neutral-700/50 p-3 rounded-lg">
+                    <div key={cat.id} className="bg-gray-100 dark:bg-neutral-700/50 p-3 rounded-lg">
                       <div className="flex justify-between items-center mb-1">
                         <div className="flex items-center gap-3">
                           <i className={`${cat.icon} fa-fw`} style={{ color: cat.color }}></i>
-                          <span className="font-semibold text-neutral-200">{cat.name}</span>
+                          <span className="font-semibold text-gray-800 dark:text-neutral-200">{cat.name}</span>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-neutral-100">${cat.amount.toFixed(2)}</p>
-                          <p className="text-xs text-neutral-400">{cat.percentage.toFixed(1)}%</p>
+                          <p className="font-bold text-gray-900 dark:text-neutral-100">${cat.amount.toFixed(2)}</p>
+                          <p className="text-xs text-gray-500 dark:text-neutral-400">{cat.percentage.toFixed(1)}%</p>
                         </div>
                       </div>
-                       <div className="w-full bg-neutral-600 rounded-full h-1.5 mt-1">
+                       <div className="w-full bg-gray-200 dark:bg-neutral-600 rounded-full h-1.5 mt-1">
                           <div
                             className="h-1.5 rounded-full"
                             style={{ width: `${cat.percentage}%`, backgroundColor: cat.color, transition: 'width 0.5s' }}
@@ -77,20 +77,20 @@ export const CurrentCycleBudgetView: React.FC<CurrentCycleBudgetViewProps> = ({ 
                         </div>
                     </div>
                   )) : (
-                     <p className="text-center text-neutral-500 py-4">No hay gastos registrados en este ciclo.</p>
+                     <p className="text-center text-gray-500 dark:text-neutral-500 py-4">No hay gastos registrados en este ciclo.</p>
                   )}
                 </div>
               </div>
             </div>
-            <div className="mt-6 flex-shrink-0 border-t border-neutral-700 pt-4 text-center">
-                <p className="text-xs text-neutral-500">Este es un presupuesto en tiempo real. Se guardará en tu historial cuando el ciclo finalice.</p>
+            <div className="mt-6 flex-shrink-0 border-t border-gray-200 dark:border-neutral-700 pt-4 text-center">
+                <p className="text-xs text-gray-500 dark:text-neutral-500">Este es un presupuesto en tiempo real. Se guardará en tu historial cuando el ciclo finalice.</p>
             </div>
           </>
         ) : (
            <div className="text-center p-8">
                 <i className="fa-solid fa-circle-info text-4xl text-blue-500 mb-4"></i>
-                <h2 className="text-2xl font-bold mb-2 text-neutral-100">Sin Presupuesto Activo</h2>
-                <p className="text-neutral-300 mb-6">
+                <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-neutral-100">Sin Presupuesto Activo</h2>
+                <p className="text-gray-600 dark:text-neutral-300 mb-6">
                     Para ver un presupuesto en tiempo real, primero debes configurar un ciclo de pago en la pestaña de "Gastos".
                 </p>
                 <button 

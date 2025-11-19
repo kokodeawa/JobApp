@@ -59,31 +59,31 @@ const CycleManager: React.FC<{
         <div className="relative" ref={managerRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 bg-neutral-700 p-2 rounded-lg w-full text-left"
+                className="flex items-center gap-3 bg-gray-100 dark:bg-neutral-700 p-2 rounded-lg w-full text-left"
             >
                 {activeProfile ? (
                     <>
                         <span className="w-3 h-3 rounded-full" style={{backgroundColor: activeProfile.color}}></span>
-                        <span className="font-bold text-neutral-100 flex-grow">{activeProfile.name}</span>
+                        <span className="font-bold text-gray-900 dark:text-neutral-100 flex-grow">{activeProfile.name}</span>
                     </>
                 ) : (
-                    <span className="font-bold text-neutral-300 flex-grow">Seleccionar Calendario</span>
+                    <span className="font-bold text-gray-600 dark:text-neutral-300 flex-grow">Seleccionar Calendario</span>
                 )}
-                 <i className={`fa-solid fa-chevron-down text-sm text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
+                 <i className={`fa-solid fa-chevron-down text-sm text-gray-500 dark:text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
             </button>
             {isOpen && (
-                 <div className="absolute top-full mt-2 w-full bg-neutral-800 rounded-lg shadow-lg z-10 p-2 border border-neutral-700">
+                 <div className="absolute top-full mt-2 w-full bg-white dark:bg-neutral-800 rounded-lg shadow-lg z-10 p-2 border border-gray-200 dark:border-neutral-700">
                     <ul className="space-y-1">
                         {profiles.map(profile => (
                             <li key={profile.id}>
-                                <button onClick={() => handleSelect(profile.id)} className={`w-full text-left p-2 rounded-md flex items-center gap-3 ${activeId === profile.id ? 'bg-blue-600 text-white' : 'active:bg-neutral-700'}`}>
+                                <button onClick={() => handleSelect(profile.id)} className={`w-full text-left p-2 rounded-md flex items-center gap-3 ${activeId === profile.id ? 'bg-blue-600 text-white' : 'active:bg-gray-100 dark:active:bg-neutral-700 text-gray-800 dark:text-neutral-200'}`}>
                                     <span className="w-3 h-3 rounded-full" style={{backgroundColor: profile.color}}></span>
                                     <span>{profile.name}</span>
                                 </button>
                             </li>
                         ))}
                          <li>
-                            <button onClick={onManage} className="w-full text-left p-2 rounded-md active:bg-neutral-700 text-blue-400 font-semibold mt-1 border-t border-neutral-700">
+                            <button onClick={onManage} className="w-full text-left p-2 rounded-md active:bg-gray-100 dark:active:bg-neutral-700 text-blue-500 dark:text-blue-400 font-semibold mt-1 border-t border-gray-200 dark:border-neutral-700">
                                 <i className="fa-solid fa-cog mr-2"></i>
                                 Gestionar Calendarios
                             </button>
@@ -322,7 +322,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
     const calendarDays = [];
     const startingDay = firstDayOfMonth.getDay();
     for (let i = 0; i < startingDay; i++) {
-      calendarDays.push(<div key={`blank-${i}`} className="border-r border-b border-neutral-700"></div>);
+      calendarDays.push(<div key={`blank-${i}`} className="border-r border-b border-gray-200 dark:border-neutral-700"></div>);
     }
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
@@ -336,11 +336,11 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
       calendarDays.push(
         <div
             key={day} 
-            className="border-r border-b border-neutral-700 p-1.5 flex flex-col cursor-pointer active:bg-blue-900/50 transition-colors relative aspect-square"
+            className="border-r border-b border-gray-200 dark:border-neutral-700 p-1.5 flex flex-col cursor-pointer active:bg-blue-100 dark:active:bg-blue-900/50 transition-colors relative aspect-square"
             onClick={() => openExpenseModal(day)}
         >
           <div className="flex justify-between items-start">
-             <span className={`font-bold text-sm ${isToday ? 'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center' : 'text-neutral-200'}`}>{day}</span>
+             <span className={`font-bold text-sm ${isToday ? 'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center' : 'text-gray-800 dark:text-neutral-200'}`}>{day}</span>
              <div className="flex flex-col items-end space-y-1">
                 {isPayDay && <i className="fa-solid fa-dollar-sign text-green-500 text-xs" title="Día de pago"></i>}
                  {dayPlannedExpenses.length > 0 && (
@@ -372,25 +372,25 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
                 <i className="fa-solid fa-plus mr-2"></i>Añadir Gasto Planificado
             </button>
             {sortedFutureExpenses.length === 0 ? (
-                <p className="text-center text-neutral-400 py-8">No tienes gastos planificados.</p>
+                <p className="text-center text-gray-500 dark:text-neutral-400 py-8">No tienes gastos planificados.</p>
             ) : (
                 <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
                     {sortedFutureExpenses.map(exp => {
                         const category = categoryMap.get(exp.categoryId);
                         return (
-                            <div key={exp.id} className="bg-neutral-700 p-3 rounded-lg flex justify-between items-center">
+                            <div key={exp.id} className="bg-gray-100 dark:bg-neutral-700 p-3 rounded-lg flex justify-between items-center">
                                 <div>
-                                    <p className="font-bold text-neutral-200">{exp.note}</p>
-                                    <p className="text-sm text-neutral-300">
+                                    <p className="font-bold text-gray-800 dark:text-neutral-200">{exp.note}</p>
+                                    <p className="text-sm text-gray-700 dark:text-neutral-300">
                                         {category?.name} &bull; ${exp.amount.toFixed(2)}
                                     </p>
-                                    <p className="text-xs text-neutral-400 capitalize">
+                                    <p className="text-xs text-gray-500 dark:text-neutral-400 capitalize">
                                         {exp.frequency.replace('-', ' ')} &bull; Inicia: {new Date(`${exp.startDate}T00:00:00`).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <button onClick={() => handleOpenFutureExpenseModal(exp)} className="p-2 w-8 h-8 rounded-lg active:bg-neutral-600 text-blue-400"><i className="fa-solid fa-pencil"></i></button>
-                                    <button onClick={() => handleDeleteFutureExpense(exp.id)} className="p-2 w-8 h-8 rounded-lg active:bg-neutral-600 text-red-400"><i className="fa-solid fa-trash-can"></i></button>
+                                    <button onClick={() => handleOpenFutureExpenseModal(exp)} className="p-2 w-8 h-8 rounded-lg active:bg-gray-200 dark:active:bg-neutral-600 text-blue-500 dark:text-blue-400"><i className="fa-solid fa-pencil"></i></button>
+                                    <button onClick={() => handleDeleteFutureExpense(exp.id)} className="p-2 w-8 h-8 rounded-lg active:bg-gray-200 dark:active:bg-neutral-600 text-red-500 dark:text-red-400"><i className="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>
                         )
@@ -408,21 +408,21 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
     `px-4 py-2 font-semibold rounded-lg transition-colors ${
         activeSubTab === tabName
         ? 'bg-blue-500 text-white'
-        : 'bg-transparent text-neutral-300 active:bg-neutral-700'
+        : 'bg-transparent text-gray-600 dark:text-neutral-300 active:bg-gray-200 dark:active:bg-neutral-700'
     }`;
 
 
   return (
     <>
-      <div className="bg-neutral-800 p-6 rounded-3xl shadow-lg">
-        <div className="border-b pb-4 border-neutral-700 mb-6">
+      <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg">
+        <div className="border-b pb-4 border-gray-200 dark:border-neutral-700 mb-6">
             <div className="flex flex-wrap justify-between items-center gap-4">
-                <h2 className="text-2xl font-bold text-neutral-100">Rastreador de Gastos</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100">Rastreador de Gastos</h2>
                 <div className="flex items-center gap-2">
                     <button 
                         onClick={() => setIsCycleBudgetModalOpen(true)} 
                         disabled={!currentCycleBudget}
-                        className="text-sm bg-teal-600 active:bg-teal-700 text-white font-semibold py-2 px-3 rounded-lg disabled:bg-neutral-600 disabled:cursor-not-allowed transition-colors"
+                        className="text-sm bg-teal-600 active:bg-teal-700 text-white font-semibold py-2 px-3 rounded-lg disabled:bg-gray-400 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed transition-colors"
                         title={!currentCycleBudget ? "Configura un ciclo de pago para ver el presupuesto" : "Ver presupuesto del ciclo actual"}
                     >
                         <i className="fa-solid fa-chart-pie mr-2"></i>Ver Presupuesto
@@ -430,7 +430,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
                     <button 
                         onClick={onForceCreateBudget} 
                         disabled={!payCycleConfig}
-                        className="text-sm bg-blue-600 active:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg disabled:bg-neutral-600 disabled:cursor-not-allowed transition-colors"
+                        className="text-sm bg-blue-600 active:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg disabled:bg-gray-400 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed transition-colors"
                         title={!payCycleConfig ? "Configura un ciclo de pago para usar esta función" : "Crear presupuesto con los gastos hasta hoy"}
                     >
                         <i className="fa-solid fa-bolt mr-2"></i>Crear Presupuesto
@@ -448,11 +448,11 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
         </div>
 
         {activeCycleId && !payCycleConfig && (
-            <div className="bg-yellow-900/50 border border-yellow-700 text-yellow-200 p-4 rounded-lg my-6 flex items-start gap-4 animate-fade-in-scale">
-                <i className="fa-solid fa-triangle-exclamation text-xl mt-1 text-yellow-400"></i>
+            <div className="bg-yellow-100 dark:bg-yellow-900/50 border border-yellow-200 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200 p-4 rounded-lg my-6 flex items-start gap-4 animate-fade-in-scale">
+                <i className="fa-solid fa-triangle-exclamation text-xl mt-1 text-yellow-500 dark:text-yellow-400"></i>
                 <div>
-                    <h3 className="font-bold text-base text-yellow-100">¡Configura tu ciclo de pagos!</h3>
-                    <p className="text-sm text-yellow-300 mb-3">
+                    <h3 className="font-bold text-base text-yellow-900 dark:text-yellow-100">¡Configura tu ciclo de pagos!</h3>
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
                         Añade tus ingresos y la frecuencia de tus pagos para activar el presupuesto en tiempo real y la creación automática de resúmenes.
                     </p>
                     <button
@@ -468,7 +468,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
             </div>
         )}
 
-        <div className="mb-6 flex space-x-2 p-1 bg-neutral-900/50 rounded-xl self-start">
+        <div className="mb-6 flex space-x-2 p-1 bg-gray-100 dark:bg-neutral-900/50 rounded-xl self-start">
             <button onClick={() => setActiveSubTab('calendar')} className={tabButtonClasses('calendar')}>
                 <i className="fa-solid fa-calendar-alt mr-2"></i>Calendario
             </button>
@@ -481,14 +481,14 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
             activeSubTab === 'calendar' ? (
                 <>
                     <div className="flex justify-between items-center mb-4">
-                    <button onClick={handlePrevMonth} className="p-2 rounded-full active:bg-neutral-700"><i className="fa-solid fa-chevron-left"></i></button>
-                    <h3 className="text-xl font-bold">{currentDate.toLocaleString('es-ES', { month: 'long', year: 'numeric' })}</h3>
-                    <button onClick={handleNextMonth} className="p-2 rounded-full active:bg-neutral-700"><i className="fa-solid fa-chevron-right"></i></button>
+                    <button onClick={handlePrevMonth} className="p-2 rounded-full text-gray-600 dark:text-neutral-300 active:bg-gray-200 dark:active:bg-neutral-700"><i className="fa-solid fa-chevron-left"></i></button>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-neutral-100">{currentDate.toLocaleString('es-ES', { month: 'long', year: 'numeric' })}</h3>
+                    <button onClick={handleNextMonth} className="p-2 rounded-full text-gray-600 dark:text-neutral-300 active:bg-gray-200 dark:active:bg-neutral-700"><i className="fa-solid fa-chevron-right"></i></button>
                     </div>
 
-                    <div className="grid grid-cols-7 border-t border-l border-neutral-700 select-none">
+                    <div className="grid grid-cols-7 border-t border-l border-gray-200 dark:border-neutral-700 select-none">
                     {weekDays.map(day => (
-                        <div key={day} className="text-center font-bold p-2 border-r border-b border-neutral-700 text-sm text-neutral-400">{day}</div>
+                        <div key={day} className="text-center font-bold p-2 border-r border-b border-gray-200 dark:border-neutral-700 text-sm text-gray-500 dark:text-neutral-400">{day}</div>
                     ))}
                     {renderCalendar()}
                     </div>
@@ -498,7 +498,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
             )
         ) : (
             <div className="text-center py-12">
-                <p className="text-neutral-400">Por favor, crea o selecciona un calendario para empezar.</p>
+                <p className="text-gray-500 dark:text-neutral-400">Por favor, crea o selecciona un calendario para empezar.</p>
             </div>
         )}
 
@@ -511,25 +511,25 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
 
         return (
             <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4" onClick={closeExpenseModal}>
-                <div className="bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-md transform transition-all animate-fade-in-scale" onClick={e => e.stopPropagation()}>
-                    <h3 className="text-lg font-bold mb-4 text-neutral-100">Gastos del {selectedDate.toLocaleDateString('es-ES')}</h3>
+                <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-md transform transition-all animate-fade-in-scale" onClick={e => e.stopPropagation()}>
+                    <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-neutral-100">Gastos del {selectedDate.toLocaleDateString('es-ES')}</h3>
                     
                     {plannedForDay.length > 0 && (
-                        <div className="mb-4 border-b border-neutral-700 pb-4">
-                            <h4 className="text-sm font-semibold text-neutral-300 mb-2 flex items-center gap-2">
-                                <i className="fa-solid fa-flag text-blue-400"></i>
+                        <div className="mb-4 border-b border-gray-200 dark:border-neutral-700 pb-4">
+                            <h4 className="text-sm font-semibold text-gray-700 dark:text-neutral-300 mb-2 flex items-center gap-2">
+                                <i className="fa-solid fa-flag text-blue-500 dark:text-blue-400"></i>
                                 Gastos Planificados
                             </h4>
                             <div className="space-y-2 max-h-32 overflow-y-auto pr-2">
                                 {plannedForDay.map(pExp => {
                                     const category = categoryMap.get(pExp.categoryId);
                                     return (
-                                        <div key={pExp.id} className="flex justify-between items-center bg-neutral-700/50 p-2 rounded-lg">
+                                        <div key={pExp.id} className="flex justify-between items-center bg-gray-100 dark:bg-neutral-700/50 p-2 rounded-lg">
                                             <div className="flex items-center gap-3">
                                                 {category && <i className={`${category.icon} fa-fw`} style={{ color: category.color }}></i>}
-                                                <span className="text-sm text-neutral-200">{pExp.note}</span>
+                                                <span className="text-sm text-gray-800 dark:text-neutral-200">{pExp.note}</span>
                                             </div>
-                                            <span className="font-semibold text-sm text-neutral-100">${pExp.amount.toFixed(2)}</span>
+                                            <span className="font-semibold text-sm text-gray-900 dark:text-neutral-100">${pExp.amount.toFixed(2)}</span>
                                         </div>
                                     );
                                 })}
@@ -537,24 +537,24 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
                         </div>
                     )}
                     
-                    <h4 className="text-sm font-semibold text-neutral-300 mb-2 flex items-center gap-2">
-                        <i className="fa-solid fa-cash-register text-green-400"></i>
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-neutral-300 mb-2 flex items-center gap-2">
+                        <i className="fa-solid fa-cash-register text-green-500 dark:text-green-400"></i>
                         Gastos Registrados
                     </h4>
                     <div className="space-y-2 max-h-48 overflow-y-auto mb-4 pr-2">
                         {selectedDateExpenses.length === 0 ? (
-                            <p className="text-sm text-neutral-400">No hay gastos para este día.</p>
+                            <p className="text-sm text-gray-500 dark:text-neutral-400">No hay gastos para este día.</p>
                         ) : (
                             selectedDateExpenses.map(exp => {
                                 const category = categoryMap.get(exp.categoryId);
                                 return (
-                                    <div key={exp.id} className="flex justify-between items-center bg-neutral-700 p-2 rounded-lg">
+                                    <div key={exp.id} className="flex justify-between items-center bg-gray-100 dark:bg-neutral-700 p-2 rounded-lg">
                                         <div className="flex items-center gap-3">
                                             {category && <i className={`${category.icon} fa-fw`} style={{ color: category.color }}></i>}
-                                            <span className="text-neutral-200">{exp.note || category?.name}</span>
+                                            <span className="text-gray-800 dark:text-neutral-200">{exp.note || category?.name}</span>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <span className="font-semibold text-neutral-100">${exp.amount.toFixed(2)}</span>
+                                            <span className="font-semibold text-gray-900 dark:text-neutral-100">${exp.amount.toFixed(2)}</span>
                                             <button onClick={() => handleDeleteExpense(selectedDate, exp.id)} className="text-red-500 active:text-red-700 w-6 h-6 rounded flex items-center justify-center"><i className="fa-solid fa-trash-can text-xs"></i></button>
                                         </div>
                                     </div>
@@ -562,15 +562,15 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
                             })
                         )}
                     </div>
-                    <form onSubmit={handleAddExpense} className="space-y-3 border-t border-neutral-700 pt-4">
+                    <form onSubmit={handleAddExpense} className="space-y-3 border-t border-gray-200 dark:border-neutral-700 pt-4">
                         <CustomSelect
                             options={categoryOptions}
                             value={newExpenseCategoryId}
                             onChange={setNewExpenseCategoryId}
                             className="[&>button]:p-2 [&>button]:text-base [&>button]:font-normal"
                         />
-                        <input type="text" value={newExpenseNote} onChange={e => setNewExpenseNote(e.target.value)} placeholder="Nota (ej. Café)" className="w-full p-2 bg-neutral-700 text-white border border-neutral-600 rounded-lg" />
-                        <input type="number" value={newExpenseAmount} onChange={e => setNewExpenseAmount(e.target.value)} placeholder="Importe" className="w-full p-2 bg-neutral-700 text-white border border-neutral-600 rounded-lg" min="0.01" step="0.01" required />
+                        <input type="text" value={newExpenseNote} onChange={e => setNewExpenseNote(e.target.value)} placeholder="Nota (ej. Café)" className="w-full p-2 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border border-gray-200 dark:border-neutral-600 rounded-lg" />
+                        <input type="number" value={newExpenseAmount} onChange={e => setNewExpenseAmount(e.target.value)} placeholder="Importe" className="w-full p-2 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white border border-gray-200 dark:border-neutral-600 rounded-lg" min="0.01" step="0.01" required />
                         <button type="submit" className="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Añadir Gasto</button>
                     </form>
                 </div>
@@ -611,22 +611,22 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
                 role="dialog"
             >
                 <div
-                    className="bg-neutral-800 rounded-2xl shadow-xl p-8 w-full max-w-md m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale text-center"
+                    className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-8 w-full max-w-md m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale text-center"
                     onClick={e => e.stopPropagation()}
                 >
-                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900/50 mb-4">
-                        <i className="fa-solid fa-triangle-exclamation text-2xl text-red-400"></i>
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/50 mb-4">
+                        <i className="fa-solid fa-triangle-exclamation text-2xl text-red-500 dark:text-red-400"></i>
                     </div>
-                    <h2 className="text-2xl font-bold mb-2 text-neutral-100">Eliminar Calendario</h2>
-                    <p className="text-neutral-300 mb-6">
-                        ¿Seguro que quieres eliminar el calendario <strong className="text-neutral-100">"{deletingCycleProfile.name}"</strong>?
+                    <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-neutral-100">Eliminar Calendario</h2>
+                    <p className="text-gray-600 dark:text-neutral-300 mb-6">
+                        ¿Seguro que quieres eliminar el calendario <strong className="text-gray-800 dark:text-neutral-100">"{deletingCycleProfile.name}"</strong>?
                         <br/>
                         Todos los gastos diarios y planificados asociados a él serán borrados permanentemente. Esta acción no se puede deshacer.
                     </p>
                     <div className="mt-8 flex justify-center space-x-4">
                     <button
                         onClick={handleCancelDeleteCycle}
-                        className="px-6 py-2.5 rounded-lg bg-neutral-600 text-neutral-200 active:bg-neutral-500 font-semibold transition-colors"
+                        className="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-neutral-200 active:bg-gray-300 dark:active:bg-neutral-500 font-semibold transition-colors"
                     >
                         Cancelar
                     </button>

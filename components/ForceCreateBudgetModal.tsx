@@ -41,29 +41,29 @@ export const ForceCreateBudgetModal: React.FC<ForceCreateBudgetModalProps> = ({
       role="dialog"
     >
       <div 
-        className="bg-neutral-800 rounded-2xl shadow-xl p-8 w-full max-w-lg m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale"
+        className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-8 w-full max-w-lg m-4 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale"
         onClick={e => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
         <div className="text-center">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-900/50 mb-4">
-                <i className="fa-solid fa-triangle-exclamation text-2xl text-yellow-400"></i>
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900/50 mb-4">
+                <i className="fa-solid fa-triangle-exclamation text-2xl text-yellow-500 dark:text-yellow-400"></i>
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-neutral-100">Creación de Presupuesto Parcial</h2>
+            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-neutral-100">Creación de Presupuesto Parcial</h2>
         </div>
 
-        <p className="text-neutral-300 mb-6 text-center">
-            Estás a punto de crear un presupuesto para el ciclo actual, que aún no ha terminado. Se incluirán todos los gastos diarios registrados <strong className="text-red-400">Y</strong> los gastos futuros planificados entre el <strong>{formattedStartDate}</strong> y el <strong>{formattedEndDate}</strong>.
+        <p className="text-gray-600 dark:text-neutral-300 mb-6 text-center">
+            Estás a punto de crear un presupuesto para el ciclo actual, que aún no ha terminado. Se incluirán todos los gastos diarios registrados <strong className="text-red-600 dark:text-red-400">Y</strong> los gastos futuros planificados entre el <strong>{formattedStartDate}</strong> y el <strong>{formattedEndDate}</strong>.
         </p>
 
-        <div className="bg-neutral-700 p-4 rounded-lg text-sm text-neutral-300 mb-6">
-            <p><i className="fa-solid fa-circle-info mr-2 text-blue-400"></i>Una vez guardado, este presupuesto aparecerá en tu historial y podrás editarlo o eliminarlo en cualquier momento, como cualquier otro presupuesto.</p>
+        <div className="bg-gray-100 dark:bg-neutral-700 p-4 rounded-lg text-sm text-gray-600 dark:text-neutral-300 mb-6">
+            <p><i className="fa-solid fa-circle-info mr-2 text-blue-500 dark:text-blue-400"></i>Una vez guardado, este presupuesto aparecerá en tu historial y podrás editarlo o eliminarlo en cualquier momento, como cualquier otro presupuesto.</p>
         </div>
 
         <div className="mt-8 flex justify-center space-x-4">
           <button 
             onClick={onClose}
-            className="px-6 py-2.5 rounded-lg bg-neutral-600 text-neutral-200 hover:bg-neutral-500 font-semibold transition-colors"
+            className="px-6 py-2.5 rounded-lg bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-neutral-200 hover:bg-gray-300 dark:hover:bg-neutral-500 font-semibold transition-colors"
           >
             Cancelar
           </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LoginView } from './src/components/LoginView';
+import { LoginView } from './components/LoginView';
 import { MainApp } from './MainApp';
 
 const App: React.FC = () => {

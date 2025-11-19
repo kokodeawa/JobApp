@@ -9,14 +9,14 @@ interface BudgetComparisonProps {
 const DifferenceIndicator: React.FC<{ value: number; unit?: string; invertColors?: boolean }> = ({ value, unit = '$', invertColors = false }) => {
   const isPositive = value > 0;
   const isNegative = value < 0;
-  let color = 'text-neutral-400';
+  let color = 'text-gray-500 dark:text-neutral-400';
   let icon = 'fa-solid fa-minus';
   
   if (isPositive) {
-    color = invertColors ? 'text-red-400' : 'text-green-400';
+    color = invertColors ? 'text-red-500 dark:text-red-400' : 'text-green-600 dark:text-green-400';
     icon = 'fa-solid fa-arrow-trend-up';
   } else if (isNegative) {
-    color = invertColors ? 'text-green-400' : 'text-red-400';
+    color = invertColors ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400';
     icon = 'fa-solid fa-arrow-trend-down';
   }
 
@@ -49,38 +49,38 @@ export const BudgetComparison: React.FC<BudgetComparisonProps> = ({ current, pre
   }).filter(cat => cat.difference !== 0);
 
   return (
-    <div className="bg-neutral-700/50 p-4 rounded-2xl mt-6 border border-neutral-700">
-      <h4 className="text-base font-bold mb-4 text-neutral-200">Comparación con <span className="text-blue-400">{previous.name}</span></h4>
+    <div className="bg-gray-100/50 dark:bg-neutral-700/50 p-4 rounded-2xl mt-6 border border-gray-200 dark:border-neutral-700">
+      <h4 className="text-base font-bold mb-4 text-gray-800 dark:text-neutral-200">Comparación con <span className="text-blue-500 dark:text-blue-400">{previous.name}</span></h4>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div className="p-3 bg-neutral-800 rounded-xl">
-          <p className="text-xs text-neutral-400 mb-1">Ingresos</p>
+        <div className="p-3 bg-white dark:bg-neutral-800 rounded-xl">
+          <p className="text-xs text-gray-500 dark:text-neutral-400 mb-1">Ingresos</p>
           <DifferenceIndicator value={incomeDiff} />
         </div>
-        <div className="p-3 bg-neutral-800 rounded-xl">
-          <p className="text-xs text-neutral-400 mb-1">Gastos Asignados</p>
+        <div className="p-3 bg-white dark:bg-neutral-800 rounded-xl">
+          <p className="text-xs text-gray-500 dark:text-neutral-400 mb-1">Gastos Asignados</p>
           <DifferenceIndicator value={allocatedDiff} invertColors />
         </div>
-        <div className="p-3 bg-neutral-800 rounded-xl">
-          <p className="text-xs text-neutral-400 mb-1">Balance</p>
+        <div className="p-3 bg-white dark:bg-neutral-800 rounded-xl">
+          <p className="text-xs text-gray-500 dark:text-neutral-400 mb-1">Balance</p>
           <DifferenceIndicator value={balanceDiff} />
         </div>
       </div>
       
       {categoryChanges.length > 0 && (
         <div>
-          <h5 className="font-semibold mb-2 text-sm text-neutral-300">Cambios por Categoría</h5>
+          <h5 className="font-semibold mb-2 text-sm text-gray-700 dark:text-neutral-300">Cambios por Categoría</h5>
           <ul className="space-y-2">
             {categoryChanges.map(cat => (
-              <li key={cat.id} className="flex justify-between items-center p-2 rounded-lg bg-neutral-800 text-sm">
+              <li key={cat.id} className="flex justify-between items-center p-2 rounded-lg bg-white dark:bg-neutral-800 text-sm">
                 <div className="flex items-center space-x-3">
                   <span className="w-6 h-6 flex items-center justify-center rounded-full text-white text-xs" style={{ backgroundColor: cat.color }}>
                     <i className={cat.icon}></i>
                   </span>
-                  <span className="font-medium text-neutral-200">{cat.name}</span>
+                  <span className="font-medium text-gray-800 dark:text-neutral-200">{cat.name}</span>
                 </div>
                 <div className="text-right flex items-center gap-3">
-                    <span className="text-xs text-neutral-500">${cat.previousAmount.toFixed(2)} &rarr; ${cat.amount.toFixed(2)}</span>
+                    <span className="text-xs text-gray-500 dark:text-neutral-500">${cat.previousAmount.toFixed(2)} &rarr; ${cat.amount.toFixed(2)}</span>
                     <DifferenceIndicator value={cat.difference} invertColors />
                 </div>
               </li>

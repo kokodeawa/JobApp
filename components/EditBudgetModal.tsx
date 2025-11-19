@@ -126,21 +126,21 @@ export const BudgetEditorModal: React.FC<BudgetEditorModalProps> = ({ isOpen, on
       role="dialog"
     >
       <div 
-        className="bg-neutral-800 rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-2xl my-8 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale max-h-[90vh] flex flex-col"
+        className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-2xl my-8 transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold mb-6 text-neutral-100 flex-shrink-0 border-b border-neutral-700 pb-4">
+        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-neutral-100 flex-shrink-0 border-b border-gray-200 dark:border-neutral-700 pb-4">
             {isCreateMode ? 'Crear Presupuesto Rápido' : 'Editar Presupuesto'}
         </h2>
         <div className="overflow-y-auto space-y-6 pr-2 -mr-2 flex-grow">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Nombre</label>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-3 bg-neutral-700 text-white rounded-lg" autoFocus />
+              <label className="block text-sm font-medium text-gray-600 dark:text-neutral-300 mb-2">Nombre</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-3 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white rounded-lg" autoFocus />
             </div>
             <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">Fecha</label>
-                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 bg-neutral-700 text-white rounded-lg" />
+                <label className="block text-sm font-medium text-gray-600 dark:text-neutral-300 mb-2">Fecha</label>
+                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-white rounded-lg" />
             </div>
           </div>
           <FrequencySelector selected={frequency} onChange={setFrequency} />
@@ -151,8 +151,8 @@ export const BudgetEditorModal: React.FC<BudgetEditorModalProps> = ({ isOpen, on
             ))}
           </div>
         </div>
-        <div className="mt-8 flex justify-end space-x-4 flex-shrink-0 border-t border-neutral-700 pt-6">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg bg-neutral-600 text-neutral-200 font-semibold">Cancelar</button>
+        <div className="mt-8 flex justify-end space-x-4 flex-shrink-0 border-t border-gray-200 dark:border-neutral-700 pt-6">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-neutral-200 font-semibold">Cancelar</button>
           <button onClick={handleAction} className="px-6 py-2 rounded-lg bg-blue-600 active:bg-blue-700 text-white font-bold">{isCreateMode ? 'Guardar' : 'Actualizar'}</button>
         </div>
       </div>

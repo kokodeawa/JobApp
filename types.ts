@@ -49,7 +49,6 @@ export interface FutureExpense {
     endDate?: string | null; // Optional ISO string for when it stops repeating
 }
 
-// FIX: Add User and Users interfaces to resolve an import error in MainApp.tsx.
 export interface User {
   password: string;
   avatarId: string;
