@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { LogoutConfirmationModal } from './LogoutConfirmationModal';
 
 interface SideMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  currentUser: string;
+  onLogout: () => void;
 }
 
-export const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose }) => {
+export const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, currentUser, onLogout }) => {
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
 
   return (
     <>
@@ -38,29 +47,63 @@ export const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose }) => {
           {/* User Profile Section */}
           <div className="mb-4">
             <div className="flex items-center space-x-4">
-              <img
-                src="https://via.placeholder.com/48" // Placeholder, replace with actual user image
-                alt="Foto de perfil"
-                className="w-12 h-12 rounded-full"
-              />
+              <div className="w-12 h-12 rounded-full bg-neutral-700 flex items-center justify-center text-xl font-bold text-blue-400">
+                {currentUser.charAt(0).toUpperCase()}
+              </div>
               <div>
-                <p className="font-semibold text-neutral-200">Usuario de Google</p>
-                <p className="text-sm text-neutral-400">usuario@gmail.com</p>
+                <p className="font-semibold text-neutral-200">{currentUser}</p>
+                <p className="text-sm text-neutral-400">Perfil Local</p>
               </div>
             </div>
           </div>
           
           <div className="flex-grow"></div>
 
+          {/* Options Section */}
+          <div className="mb-2">
+              <button 
+                onClick={() => setIsOptionsOpen(!isOptionsOpen)} 
+                className="w-full text-left p-3 rounded-lg flex justify-between items-center active:bg-neutral-700 text-neutral-200 font-semibold transition-colors"
+                aria-expanded={isOptionsOpen}
+              >
+                <span>
+                  <i className="fa-solid fa-cog mr-3"></i>
+                  Opciones
+                </span>
+                <i className={`fa-solid fa-chevron-down text-sm transition-transform duration-200 ${isOptionsOpen ? 'rotate-180' : ''}`}></i>
+              </button>
+              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOptionsOpen ? 'max-h-60 mt-2' : 'max-h-0'}`}>
+                <div className="bg-neutral-700/50 p-4 rounded-lg space-y-3 text-sm">
+                  <div className="flex items-center text-neutral-300">
+                    <i className="fa-solid fa-language fa-fw mr-3 text-neutral-400"></i>
+                    <span>Idioma: Español (ES)</span>
+                  </div>
+                  <div className="flex items-center text-neutral-300">
+                    <i className="fa-solid fa-moon fa-fw mr-3 text-neutral-400"></i>
+                    <span>Tema: Oscuro</span>
+                  </div>
+                  <div className="flex items-center text-neutral-300 pt-3 border-t border-neutral-600 mt-3">
+                    <i className="fa-solid fa-code fa-fw mr-3 text-blue-400"></i>
+                    <span>Creado por Anghello Sanchez</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           {/* Footer/Logout */}
-          <div className="mt-auto flex-shrink-0 pt-4 border-t border-neutral-700">
-            <button className="w-full text-left p-3 rounded-lg active:bg-red-500/10 text-red-400 font-semibold transition-colors">
+          <div className="flex-shrink-0 pt-4 border-t border-neutral-700">
+            <button onClick={handleLogoutClick} className="w-full text-left p-3 rounded-lg active:bg-red-500/10 text-red-400 font-semibold transition-colors">
               <i className="fa-solid fa-right-from-bracket mr-3"></i>
               Cerrar Sesión
             </button>
           </div>
         </div>
       </div>
+      <LogoutConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={onLogout}
+      />
     </>
   );
 };

@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { DailyExpense, Category, PayCycleConfig, FutureExpense, BudgetRecord, CycleProfile } from '../types';
 import { CycleSettingsModal } from './CycleSettingsModal';
@@ -28,7 +24,10 @@ interface DailyExpenseViewProps {
 type SubTab = 'calendar' | 'planned';
 
 const toISODateString = (date: Date): string => {
-  return date.toISOString().split('T')[0];
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 const CycleManager: React.FC<{
@@ -166,7 +165,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
     if (!payCycleConfig) return new Set();
     
     const days = new Set<string>();
-    let payDate = new Date(payCycleConfig.startDate);
+    let payDate = new Date(`${payCycleConfig.startDate}T00:00:00`);
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
     const endDate = new Date(year, month + 1, 0);
@@ -203,7 +202,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
     const monthEndDate = new Date(year, month + 1, 0);
 
     for (const fe of futureExpenses) {
-        let occurrenceDate = new Date(fe.startDate);
+        let occurrenceDate = new Date(`${fe.startDate}T00:00:00`);
         const feEndDate = fe.endDate ? new Date(fe.endDate) : null;
         
         while(occurrenceDate <= monthEndDate && (!feEndDate || occurrenceDate <= feEndDate)) {
@@ -386,7 +385,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
                                         {category?.name} &bull; ${exp.amount.toFixed(2)}
                                     </p>
                                     <p className="text-xs text-neutral-400 capitalize">
-                                        {exp.frequency.replace('-', ' ')} &bull; Inicia: {new Date(exp.startDate).toLocaleDateString()}
+                                        {exp.frequency.replace('-', ' ')} &bull; Inicia: {new Date(`${exp.startDate}T00:00:00`).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">

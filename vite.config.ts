@@ -1,23 +1,42 @@
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
-    return {
-      server: {
-        port: 3000,
-        host: '0.0.0.0',
+// https://vitejs.dev/config/
+export default defineConfig(({ command }) => ({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'script',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
       },
-      plugins: [react()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      includeAssets: ['icon.svg'],
+      manifest: {
+        name: 'Organizador Financiero Pro',
+        short_name: 'Finanzas Pro',
+        description: 'Una aplicación web intuitiva para organizar tus ingresos mensuales, asignar presupuestos a diferentes categorías de gastos y visualizar la distribución de tu dinero de manera clara y efectiva.',
+        theme_color: '#171717',
+        background_color: '#171717',
+        display: 'standalone',
+        scope: command === 'build' ? '/WAPP/' : '/',
+        start_url: command === 'build' ? '/WAPP/' : '/',
+        icons: [
+          {
+            src: 'icon.svg',
+            sizes: '192x192 512x512',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+          {
+            src: 'icon.svg',
+            sizes: '192x192 512x512',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
+          },
+        ],
       },
-      resolve: {
-        alias: {
-          '@': path.resolve(__dirname, '.'),
-        }
-      }
-    };
-});
+    }),
+  ],
+}));

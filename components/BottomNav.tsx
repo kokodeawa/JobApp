@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 
 type ActiveTab = 'dashboard' | 'history' | 'expenses' | 'calculators';

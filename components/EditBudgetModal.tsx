@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { BudgetRecord, Category, PayCycleFrequency } from '../types';
 import { IncomeInput } from './IncomeInput';
@@ -22,6 +20,12 @@ const frequencyLabels: Record<PayCycleFrequency, string> = {
     anual: 'Anual'
 };
 
+const toISODateString = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 export const BudgetEditorModal: React.FC<BudgetEditorModalProps> = ({ isOpen, onClose, onSave, onUpdate, budget }) => {
   const [name, setName] = useState('');
@@ -61,13 +65,15 @@ export const BudgetEditorModal: React.FC<BudgetEditorModalProps> = ({ isOpen, on
         setTotalIncome(1500);
         setCategories(JSON.parse(JSON.stringify(INITIAL_CATEGORIES)));
         setFrequency('mensual');
-        setDate(today.toISOString().split('T')[0]);
+        setDate(toISODateString(today));
       } else if (budget) {
         setName(budget.name);
         setTotalIncome(budget.totalIncome);
         setCategories(JSON.parse(JSON.stringify(budget.categories))); // Deep copy
         setFrequency(budget.frequency || 'mensual');
-        setDate(budget.dateSaved.split('T')[0]);
+        // When editing, parse the stored date string to correctly display the local date
+        const budgetDate = new Date(budget.dateSaved);
+        setDate(toISODateString(budgetDate));
       }
     }
   }, [isOpen, budget, isCreateMode]);
@@ -90,9 +96,9 @@ export const BudgetEditorModal: React.FC<BudgetEditorModalProps> = ({ isOpen, on
         return;
     }
     
-    // Adjust date to local timezone midnight before converting to ISO string
-    const dateObj = new Date(date);
-    dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset());
+    // To correctly save the chosen date regardless of timezone,
+    // parse it as local midnight and convert to a full ISO string.
+    const dateObj = new Date(date + 'T00:00:00');
     const dateToSave = dateObj.toISOString();
 
     if (isCreateMode) {
