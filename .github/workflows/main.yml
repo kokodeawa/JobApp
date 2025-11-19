@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - new-main   # <-- aquí cambias la rama
+      - main   # ahora apunta a tu rama principal
   workflow_dispatch:
 
 permissions:
