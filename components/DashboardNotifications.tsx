@@ -123,7 +123,7 @@ export const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
     }, [allFutureExpenses]);
 
     return (
-        <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg space-y-4 self-start">
+        <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg space-y-4 self-start">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 border-b border-gray-200 dark:border-neutral-700 pb-3">Actividad Reciente</h2>
 
             {upcomingExpenses.length > 0 && (

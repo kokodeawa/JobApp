@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange, onMenuCl
     }`;
 
   return (
-    <header className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg sticky top-0 z-30 border-b border-gray-200 dark:border-neutral-700">
+    <header className="bg-white dark:bg-neutral-900 sticky top-0 z-30 border-b border-gray-200 dark:border-neutral-700">
       <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
         {/* Left Side */}
         <div className="flex items-center space-x-2">

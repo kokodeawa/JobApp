@@ -13,6 +13,7 @@ import { CalculatorsView } from './components/CalculatorsView';
 import { DeleteConfirmationModal } from './components/DeleteConfirmationModal';
 import { DashboardNotifications } from './components/DashboardNotifications';
 import { ProfileCustomizationModal } from './components/ProfileCustomizationModal';
+import * as storage from './storage';
 
 type ActiveTab = 'dashboard' | 'history' | 'expenses' | 'calculators';
 
@@ -34,7 +35,7 @@ const CurrentPeriodSpending: React.FC<CurrentPeriodSpendingProps> = ({
 }) => {
   if (!periodStartDate || !periodEndDate) {
     return (
-      <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg text-center">
+      <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg text-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 mb-2">Gastos del Período</h2>
         <p className="text-gray-500 dark:text-neutral-400 text-sm">
           Configura un <i className="fa-solid fa-cog mx-1"></i><strong>Ciclo de Pago</strong> en la pestaña de Gastos para ver un resumen de tus gastos actuales aquí.
@@ -48,7 +49,7 @@ const CurrentPeriodSpending: React.FC<CurrentPeriodSpendingProps> = ({
   const formattedEndDate = periodEndDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 
   return (
-    <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg space-y-4 self-start">
+    <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg space-y-4 self-start">
       <div className="border-b border-gray-200 dark:border-neutral-700 pb-3 mb-3">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100">Gastos del Período Actual</h2>
         <p className="text-sm text-gray-500 dark:text-neutral-400">{formattedStartDate} - {formattedEndDate}</p>
@@ -79,7 +80,7 @@ const CurrentPeriodSpending: React.FC<CurrentPeriodSpendingProps> = ({
 };
 
 export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
-    // Keys for localStorage
+    // Keys for localStorage/IndexedDB
     const KEYS = useMemo(() => ({
         USERS: 'financial-organizer-users',
         BUDGETS: `financial-organizer-${currentUser}-budgets`,
@@ -91,6 +92,9 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
         THEME: 'financial-organizer-theme',
     }), [currentUser]);
 
+  // State for loading
+  const [isLoading, setIsLoading] = useState(true);
+
   // State for tabs
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -98,11 +102,11 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
   // State for menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  // User profile state
+  // User profile state (remains in localStorage for sync access)
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  // Theme state
+  // Theme state (remains in localStorage for sync access)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
         const storedTheme = window.localStorage.getItem(KEYS.THEME);
@@ -112,69 +116,13 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     }
   });
 
-  // State for budgets and UI
-  const [savedBudgets, setSavedBudgets] = useState<BudgetRecord[]>(() => {
-    try {
-      const item = window.localStorage.getItem(KEYS.BUDGETS);
-      const parsed = item ? JSON.parse(item) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error("Failed to parse budgets from localStorage", error);
-      return [];
-    }
-  });
-
-  const [globalSavings, setGlobalSavings] = useState<number>(() => {
-     try {
-      const item = window.localStorage.getItem(KEYS.GLOBAL_SAVINGS);
-      const parsed = item ? JSON.parse(item) : 0;
-      return typeof parsed === 'number' ? parsed : 0;
-    } catch (error) {
-      console.error("Failed to parse global savings from localStorage", error);
-      return 0;
-    }
-  });
-
-  const [cycleProfiles, setCycleProfiles] = useState<CycleProfile[]>(() => {
-    try {
-        const item = window.localStorage.getItem(KEYS.CYCLE_PROFILES);
-        const parsed = item ? JSON.parse(item) : [];
-        return Array.isArray(parsed) ? parsed : [];
-    } catch { return []; }
-  });
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(() => {
-    try {
-        return window.localStorage.getItem(KEYS.ACTIVE_CYCLE_ID);
-    } catch { return null; }
-  });
-  
-  const [allDailyExpenses, setAllDailyExpenses] = useState<{ [cycleId: string]: { [date: string]: DailyExpense[] } }>(() => {
-    const item = window.localStorage.getItem(KEYS.ALL_DAILY);
-    if (!item) return {};
-    try {
-        const parsed = JSON.parse(item);
-        if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
-            return parsed;
-        }
-    } catch (e) {
-        console.error("Failed to parse allDailyExpenses:", e);
-    }
-    return {};
-  });
-
-  const [allFutureExpenses, setAllFutureExpenses] = useState<{ [cycleId: string]: FutureExpense[] }>(() => {
-    const item = window.localStorage.getItem(KEYS.ALL_FUTURE);
-    if (!item) return {};
-    try {
-        const parsed = JSON.parse(item);
-        if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
-            return parsed;
-        }
-    } catch (e) {
-        console.error("Failed to parse allFutureExpenses:", e);
-    }
-    return {};
-  });
+  // State for budgets and UI (now with default empty values)
+  const [savedBudgets, setSavedBudgets] = useState<BudgetRecord[]>([]);
+  const [globalSavings, setGlobalSavings] = useState<number>(0);
+  const [cycleProfiles, setCycleProfiles] = useState<CycleProfile[]>([]);
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
+  const [allDailyExpenses, setAllDailyExpenses] = useState<{ [cycleId: string]: { [date: string]: DailyExpense[] } }>({});
+  const [allFutureExpenses, setAllFutureExpenses] = useState<{ [cycleId: string]: FutureExpense[] }>({});
     
   // State for the "live" budget based on the current pay cycle
   const [currentCycleBudget, setCurrentCycleBudget] = useState<BudgetRecord | null>(null);
@@ -186,16 +134,19 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
   const [forceCreateInfo, setForceCreateInfo] = useState<{ startDate: Date, endDate: Date } | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState<BudgetRecord | null>(null);
-  
-    // Effect to get user profile on load
+
+    // Effect to get user profile on load (from localStorage)
     useEffect(() => {
         try {
             const usersData = window.localStorage.getItem(KEYS.USERS);
             if(usersData) {
                 const users: Users = JSON.parse(usersData);
                 const userData = users[currentUser];
-                if (typeof userData === 'object' && userData !== null) {
+                 if (typeof userData === 'object' && userData !== null) {
                     setUserProfile(userData);
+                } else if (typeof userData === 'string') { // Handle migration
+                    const migratedUser = { password: userData, avatarId: '0', background: 'default' };
+                    setUserProfile(migratedUser);
                 }
             }
         } catch (e) {
@@ -203,49 +154,119 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
         }
     }, [currentUser, KEYS.USERS]);
 
-    const handleUpdateAvatar = (avatarId: string) => {
+    // Async data loading from IndexedDB
+    useEffect(() => {
+        async function loadInitialData() {
+            try {
+                await storage.migrateFromLocalStorage();
+
+                const [
+                    sBudgets,
+                    sGlobalSavings,
+                    sCycleProfiles,
+                    sActiveCycleId,
+                    sAllDaily,
+                    sAllFuture,
+                ] = await Promise.all([
+                    storage.get<BudgetRecord[]>(KEYS.BUDGETS),
+                    storage.get<number>(KEYS.GLOBAL_SAVINGS),
+                    storage.get<CycleProfile[]>(KEYS.CYCLE_PROFILES),
+                    storage.get<string | null>(KEYS.ACTIVE_CYCLE_ID),
+                    storage.get<{ [cycleId: string]: { [date: string]: DailyExpense[] } }>(KEYS.ALL_DAILY),
+                    storage.get<{ [cycleId: string]: FutureExpense[] }>(KEYS.ALL_FUTURE),
+                ]);
+
+                setSavedBudgets(sBudgets || []);
+                setGlobalSavings(sGlobalSavings || 0);
+                setCycleProfiles(sCycleProfiles || []);
+                setActiveCycleId(sActiveCycleId || null);
+                setAllDailyExpenses(sAllDaily || {});
+                setAllFutureExpenses(sAllFuture || {});
+
+            } catch (error) {
+                console.error("Failed to load user data from storage. Starting with a clean state.", error);
+                // Even on error, we must stop loading to not block the UI.
+                // The app will proceed with an empty state.
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        loadInitialData();
+    }, [KEYS]);
+
+    // Hide loading spinner when done
+    useEffect(() => {
+        if (!isLoading) {
+            const loadingEl = document.getElementById('app-loading');
+            if (loadingEl) {
+                loadingEl.style.opacity = '0';
+                setTimeout(() => {
+                    loadingEl.style.display = 'none';
+                }, 300);
+            }
+        }
+    }, [isLoading]);
+
+    const handleUpdateUserProfile = (updatedFields: Partial<User>) => {
         try {
-             const usersData = window.localStorage.getItem(KEYS.USERS);
+            const usersData = window.localStorage.getItem(KEYS.USERS);
             if(usersData) {
                 const users: Users = JSON.parse(usersData);
                 const userData = users[currentUser];
-                if (typeof userData === 'object' && userData !== null) {
-                    const updatedUser = { ...userData, avatarId };
+                 if (typeof userData === 'object' && userData !== null) {
+                    const updatedUser = { ...userData, ...updatedFields };
                     const updatedUsers = { ...users, [currentUser]: updatedUser };
                     window.localStorage.setItem(KEYS.USERS, JSON.stringify(updatedUsers));
                     setUserProfile(updatedUser);
                 }
             }
         } catch (e) {
-            console.error("Failed to update avatar:", e);
+            console.error("Failed to update user profile:", e);
         }
+    };
+    
+    const handleUpdateAvatar = (avatarId: string) => {
+        handleUpdateUserProfile({ avatarId });
+    };
+
+    const handleUpdateBackground = (background: string) => {
+        handleUpdateUserProfile({ background });
         setIsProfileModalOpen(false);
-    }
+    };
 
     // Effect to select first cycle if none is active
     useEffect(() => {
-      if (!activeCycleId && cycleProfiles.length > 0) {
+      if (!isLoading && !activeCycleId && cycleProfiles.length > 0) {
         setActiveCycleId(cycleProfiles[0].id);
       }
-    }, [cycleProfiles, activeCycleId]);
+    }, [cycleProfiles, activeCycleId, isLoading]);
 
      // Effect to clean up orphaned expense data when a profile is deleted
     useEffect(() => {
+      if (isLoading) return;
         const profileIds = new Set(cycleProfiles.map(p => p.id));
         
         const cleanExpenses = (allExpenses: any) => {
             const cleaned: any = {};
+            let changed = false;
             for(const profileId in allExpenses) {
                 if (profileIds.has(profileId)) {
                     cleaned[profileId] = allExpenses[profileId];
+                } else {
+                    changed = true;
                 }
             }
-            return cleaned;
+            return { cleaned, changed };
         }
 
-        setAllDailyExpenses(prev => cleanExpenses(prev));
-        setAllFutureExpenses(prev => cleanExpenses(prev));
-    }, [cycleProfiles]);
+        const { cleaned: cleanedDaily, changed: dailyChanged } = cleanExpenses(allDailyExpenses);
+        if (dailyChanged) setAllDailyExpenses(cleanedDaily);
+
+        const { cleaned: cleanedFuture, changed: futureChanged } = cleanExpenses(allFutureExpenses);
+        if (futureChanged) setAllFutureExpenses(cleanedFuture);
+
+    }, [cycleProfiles, isLoading, allDailyExpenses, allFutureExpenses]);
 
     // Apply theme to HTML element
     useEffect(() => {
@@ -349,35 +370,18 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     }
   }, [currentPeriodSpending, activeCycleConfig, periodStartDate, periodEndDate, activeCycleProfile]);
 
-
-  // Save to localStorage whenever data changes
-  useEffect(() => {
-    window.localStorage.setItem(KEYS.BUDGETS, JSON.stringify(savedBudgets));
-  }, [savedBudgets, KEYS.BUDGETS]);
-  
-  useEffect(() => {
-    window.localStorage.setItem(KEYS.GLOBAL_SAVINGS, JSON.stringify(globalSavings));
-  }, [globalSavings, KEYS.GLOBAL_SAVINGS]);
-
-  useEffect(() => {
-    window.localStorage.setItem(KEYS.CYCLE_PROFILES, JSON.stringify(cycleProfiles));
-  }, [cycleProfiles, KEYS.CYCLE_PROFILES]);
-
-  useEffect(() => {
-    if (activeCycleId) {
-      window.localStorage.setItem(KEYS.ACTIVE_CYCLE_ID, activeCycleId);
-    } else {
-      window.localStorage.removeItem(KEYS.ACTIVE_CYCLE_ID);
-    }
-  }, [activeCycleId, KEYS.ACTIVE_CYCLE_ID]);
-
-  useEffect(() => {
-    window.localStorage.setItem(KEYS.ALL_DAILY, JSON.stringify(allDailyExpenses));
-  }, [allDailyExpenses, KEYS.ALL_DAILY]);
-
-  useEffect(() => {
-    window.localStorage.setItem(KEYS.ALL_FUTURE, JSON.stringify(allFutureExpenses));
-  }, [allFutureExpenses, KEYS.ALL_FUTURE]);
+  // Save to IndexedDB whenever data changes
+    useEffect(() => { if (!isLoading) storage.set(KEYS.BUDGETS, savedBudgets); }, [savedBudgets, KEYS.BUDGETS, isLoading]);
+    useEffect(() => { if (!isLoading) storage.set(KEYS.GLOBAL_SAVINGS, globalSavings); }, [globalSavings, KEYS.GLOBAL_SAVINGS, isLoading]);
+    useEffect(() => { if (!isLoading) storage.set(KEYS.CYCLE_PROFILES, cycleProfiles); }, [cycleProfiles, KEYS.CYCLE_PROFILES, isLoading]);
+    useEffect(() => {
+        if (!isLoading) {
+            if (activeCycleId) storage.set(KEYS.ACTIVE_CYCLE_ID, activeCycleId);
+            else storage.remove(KEYS.ACTIVE_CYCLE_ID);
+        }
+    }, [activeCycleId, KEYS.ACTIVE_CYCLE_ID, isLoading]);
+    useEffect(() => { if (!isLoading) storage.set(KEYS.ALL_DAILY, allDailyExpenses); }, [allDailyExpenses, KEYS.ALL_DAILY, isLoading]);
+    useEffect(() => { if (!isLoading) storage.set(KEYS.ALL_FUTURE, allFutureExpenses); }, [allFutureExpenses, KEYS.ALL_FUTURE, isLoading]);
 
   // Handlers for budget creation, update, and deletion
   const handleSaveNewBudget = (newBudgetData: Omit<BudgetRecord, 'id'>) => {
@@ -485,111 +489,138 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     }
   };
 
+  const backgroundUrl = useMemo(() => {
+    if (!userProfile?.background || userProfile.background === 'default') return null;
+    if (userProfile.background.startsWith('data:')) return userProfile.background;
+    switch(userProfile.background) {
+        case 'beach': return 'https://images.unsplash.com/photo-1507525428034-b723a996f6ea?q=80&w=1080&auto=format&fit=crop';
+        case 'snow': return 'https://images.unsplash.com/photo-1551582045-6ec9c11d8697?q=80&w=1080&auto=format&fit=crop';
+        case 'city': return 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?q=80&w=1080&auto=format&fit=crop';
+        default: return null;
+    }
+  }, [userProfile?.background]);
+
+  const backgroundActive = !!backgroundUrl;
+
+  if (isLoading) {
+    return null; // The index.html spinner is showing.
+  }
 
   return (
-    <div className={theme}>
-      <div className="bg-gray-50 dark:bg-neutral-900 text-gray-900 dark:text-neutral-100 min-h-screen">
-        <Header activeTab={activeTab} onTabChange={setActiveTab} onMenuClick={() => setIsMenuOpen(true)} />
-        <SideMenu 
-            isOpen={isMenuOpen} 
-            onClose={() => setIsMenuOpen(false)} 
-            currentUser={currentUser} 
-            onLogout={onLogout}
-            avatarId={userProfile?.avatarId || '0'}
-            onOpenProfileEditor={() => setIsProfileModalOpen(true)}
-            theme={theme}
-            onToggleTheme={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-        />
-        <main className="container mx-auto px-4 md:px-8 py-8 pb-24 md:pb-8">
-            {activeTab === 'dashboard' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-6">
-                <CurrentPeriodSpending 
-                    spentByCategory={currentPeriodSpending} 
-                    periodStartDate={periodStartDate}
-                    periodEndDate={periodEndDate}
-                    />
-                </div>
-                <div className="lg:col-span-1 space-y-6">
-                  <DashboardNotifications 
-                    allDailyExpenses={allDailyExpenses}
-                    allFutureExpenses={allFutureExpenses}
-                    categories={INITIAL_CATEGORIES}
-                    cycleProfiles={cycleProfiles}
-                  />
-                  <HistoryPanel
-                      budgets={savedBudgets}
-                      activeBudgetId={null}
-                      onOpenDeleteModal={openDeleteModal}
-                      onCreateNew={handleCreateNewBudget}
-                      onEditBudget={handleEditBudget}
-                  />
-                </div>
+    <>
+        {backgroundActive && (
+            <div className="fixed inset-0 -z-10">
+                <div
+                className="absolute inset-0 bg-cover bg-center transition-all duration-500"
+                style={{ backgroundImage: `url(${backgroundUrl})` }}
+                />
+                <div className="absolute inset-0 bg-black/50" />
             </div>
-            )}
-            {activeTab === 'history' && (
-                <HistoryView 
-                    budgets={savedBudgets} 
-                    globalSavings={globalSavings}
-                    onUpdateGlobalSavings={setGlobalSavings}
-                    onEditBudget={handleEditBudget}
-                    onOpenDeleteModal={openDeleteModal}
+        )}
+        <div className={`text-gray-900 dark:text-neutral-100 min-h-screen transition-colors duration-300 ${backgroundActive ? 'bg-transparent' : 'bg-gray-50 dark:bg-neutral-900'}`}>
+            <Header activeTab={activeTab} onTabChange={setActiveTab} onMenuClick={() => setIsMenuOpen(true)} />
+            <SideMenu 
+                isOpen={isMenuOpen} 
+                onClose={() => setIsMenuOpen(false)} 
+                currentUser={currentUser} 
+                onLogout={onLogout}
+                avatarId={userProfile?.avatarId || '0'}
+                onOpenProfileEditor={() => setIsProfileModalOpen(true)}
+                theme={theme}
+                onToggleTheme={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+            />
+            <main className="container mx-auto px-4 md:px-8 py-8 pb-24 md:pb-8">
+                {activeTab === 'dashboard' && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 space-y-6">
+                    <CurrentPeriodSpending 
+                        spentByCategory={currentPeriodSpending} 
+                        periodStartDate={periodStartDate}
+                        periodEndDate={periodEndDate}
+                        />
+                    </div>
+                    <div className="lg:col-span-1 space-y-6">
+                    <DashboardNotifications 
+                        allDailyExpenses={allDailyExpenses}
+                        allFutureExpenses={allFutureExpenses}
+                        categories={INITIAL_CATEGORIES}
+                        cycleProfiles={cycleProfiles}
+                    />
+                    <HistoryPanel
+                        budgets={savedBudgets}
+                        activeBudgetId={null}
+                        onOpenDeleteModal={openDeleteModal}
+                        onCreateNew={handleCreateNewBudget}
+                        onEditBudget={handleEditBudget}
+                    />
+                    </div>
+                </div>
+                )}
+                {activeTab === 'history' && (
+                    <HistoryView 
+                        budgets={savedBudgets} 
+                        globalSavings={globalSavings}
+                        onUpdateGlobalSavings={setGlobalSavings}
+                        onEditBudget={handleEditBudget}
+                        onOpenDeleteModal={openDeleteModal}
+                    />
+                )}
+                {activeTab === 'expenses' && (
+                <DailyExpenseView
+                    expenses={currentDailyExpenses}
+                    setExpenses={setCurrentDailyExpenses}
+                    categories={INITIAL_CATEGORIES}
+                    onForceCreateBudget={handleForceCreateBudget}
+                    futureExpenses={currentFutureExpenses}
+                    setFutureExpenses={setCurrentFutureExpenses}
+                    currentCycleBudget={currentCycleBudget}
+                    cycleProfiles={cycleProfiles}
+                    setCycleProfiles={setCycleProfiles}
+                    activeCycleId={activeCycleId}
+                    setActiveCycleId={setActiveCycleId}
+                    pendingAction={pendingAction}
+                    onActionHandled={() => setPendingAction(null)}
+                />
+                )}
+                {activeTab === 'calculators' && (
+                <CalculatorsView />
+                )}
+            </main>
+            
+            <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+            <BudgetEditorModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSave={handleSaveNewBudget}
+                onUpdate={handleUpdateBudget}
+                budget={editingBudget}
+            />
+            <ForceCreateBudgetModal
+                isOpen={isForceCreateModalOpen}
+                onClose={() => setIsForceCreateModalOpen(false)}
+                onConfirm={handleConfirmForceCreate}
+                cycleStartDate={forceCreateInfo?.startDate || null}
+                cycleEndDate={forceCreateInfo?.endDate || null}
+            />
+            {budgetToDelete && (
+                <DeleteConfirmationModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    onConfirm={handleConfirmDelete}
+                    budgetName={budgetToDelete.name}
+                    budgetDate={budgetToDelete.dateSaved}
                 />
             )}
-            {activeTab === 'expenses' && (
-            <DailyExpenseView
-                expenses={currentDailyExpenses}
-                setExpenses={setCurrentDailyExpenses}
-                categories={INITIAL_CATEGORIES}
-                onForceCreateBudget={handleForceCreateBudget}
-                futureExpenses={currentFutureExpenses}
-                setFutureExpenses={setCurrentFutureExpenses}
-                currentCycleBudget={currentCycleBudget}
-                cycleProfiles={cycleProfiles}
-                setCycleProfiles={setCycleProfiles}
-                activeCycleId={activeCycleId}
-                setActiveCycleId={setActiveCycleId}
-                pendingAction={pendingAction}
-                onActionHandled={() => setPendingAction(null)}
+            <ProfileCustomizationModal 
+                isOpen={isProfileModalOpen}
+                onClose={() => setIsProfileModalOpen(false)}
+                currentAvatarId={userProfile?.avatarId || '0'}
+                onSelectAvatar={handleUpdateAvatar}
+                currentBackground={userProfile?.background || 'default'}
+                onSelectBackground={handleUpdateBackground}
             />
-            )}
-            {activeTab === 'calculators' && (
-            <CalculatorsView />
-            )}
-        </main>
-        
-        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-        <BudgetEditorModal
-            isOpen={isCreateModalOpen}
-            onClose={() => setIsCreateModalOpen(false)}
-            onSave={handleSaveNewBudget}
-            onUpdate={handleUpdateBudget}
-            budget={editingBudget}
-        />
-        <ForceCreateBudgetModal
-            isOpen={isForceCreateModalOpen}
-            onClose={() => setIsForceCreateModalOpen(false)}
-            onConfirm={handleConfirmForceCreate}
-            cycleStartDate={forceCreateInfo?.startDate || null}
-            cycleEndDate={forceCreateInfo?.endDate || null}
-        />
-        {budgetToDelete && (
-            <DeleteConfirmationModal
-                isOpen={isDeleteModalOpen}
-                onClose={() => setIsDeleteModalOpen(false)}
-                onConfirm={handleConfirmDelete}
-                budgetName={budgetToDelete.name}
-                budgetDate={budgetToDelete.dateSaved}
-            />
-        )}
-        <ProfileCustomizationModal 
-            isOpen={isProfileModalOpen}
-            onClose={() => setIsProfileModalOpen(false)}
-            currentAvatarId={userProfile?.avatarId || '0'}
-            onSelectAvatar={handleUpdateAvatar}
-        />
-      </div>
-    </div>
+        </div>
+    </>
   );
 };

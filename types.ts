@@ -52,6 +52,7 @@ export interface FutureExpense {
 export interface User {
   password: string;
   avatarId: string;
+  background?: string;
 }
 
 export interface Users {

@@ -1,4 +1,4 @@
-// A collection of 20 cute SVG avatars.
+// A collection of 30 cute SVG avatars.
 // Each SVG is 100x100 and designed to fit well in a circle.
 
 export const AVATARS: string[] = [
@@ -179,5 +179,125 @@ export const AVATARS: string[] = [
 <path d="M10 80 L 40 40 L 55 60 L 70 30 L 90 80 Z" fill="#93c5fd"/>
 <path d="M5 80 L 30 50 L 45 70 L 60 40 L 85 80 Z" fill="#60a5fa"/>
 <circle cx="70" cy="25" r="8" fill="#fef08a"/>
+</svg>`,
+
+  // Panda
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="white"/>
+<circle cx="50" cy="50" r="45" stroke="#e5e7eb" stroke-width="4"/>
+<circle cx="28" cy="25" r="12" fill="black"/>
+<circle cx="72" cy="25" r="12" fill="black"/>
+<ellipse cx="38" cy="45" rx="14" ry="18" fill="black" transform="rotate(20 38 45)"/>
+<ellipse cx="62" cy="45" rx="14" ry="18" fill="black" transform="rotate(-20 62 45)"/>
+<circle cx="38" cy="45" r="6" fill="white"/>
+<circle cx="62" cy="45" r="6" fill="white"/>
+<circle cx="37" cy="46" r="2" fill="black"/>
+<circle cx="63" cy="46" r="2" fill="black"/>
+<path d="M45 60 H 55" stroke="black" stroke-width="4" stroke-linecap="round"/>
+<path d="M40 70 C 50 75, 60 75, 70 70" stroke="black" stroke-width="4" stroke-linecap="round"/>
+</svg>`,
+  
+  // Fox
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#f97316"/>
+<path d="M50 55 C 30 100, 70 100, 50 55" fill="white"/>
+<path d="M20 15 L 40 40 L 20 40 Z" fill="#f97316"/>
+<path d="M20 15 L 40 40 L 20 40" stroke="white" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M80 15 L 60 40 L 80 40 Z" fill="#f97316"/>
+<path d="M80 15 L 60 40 L 80 40" stroke="white" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="42" cy="48" r="4" fill="black"/>
+<circle cx="58" cy="48" r="4" fill="black"/>
+<path d="M50 55 L 50 62" stroke="black" stroke-width="4" stroke-linecap="round"/>
+</svg>`,
+  
+  // Koala
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#d1d5db"/>
+<circle cx="25" cy="25" r="18" fill="#9ca3af"/>
+<circle cx="75" cy="25" r="18" fill="#9ca3af"/>
+<circle cx="25" cy="25" r="12" fill="#d1d5db"/>
+<circle cx="75" cy="25" r="12" fill="#d1d5db"/>
+<ellipse cx="50" cy="55" rx="15" ry="10" fill="#4b5563"/>
+<circle cx="42" cy="45" r="4" fill="black"/>
+<circle cx="58" cy="45" r="4" fill="black"/>
+<path d="M45 70 C 50 75, 55 75, 60 70" stroke="black" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+  
+  // Bear
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#a16207"/>
+<circle cx="28" cy="25" r="14" fill="#78350f"/>
+<circle cx="72" cy="25" r="14" fill="#78350f"/>
+<ellipse cx="50" cy="60" rx="25" ry="20" fill="#facc15"/>
+<ellipse cx="50" cy="58" rx="8" ry="6" fill="#78350f"/>
+<circle cx="40" cy="48" r="4" fill="black"/>
+<circle cx="60" cy="48" r="4" fill="black"/>
+<path d="M45 65 C 50 70, 55 70, 60 65" stroke="black" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+  
+  // Bunny
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#e5e7eb"/>
+<path d="M35 5 C 25 30, 45 40, 35 55" fill="#fbcfe8"/>
+<path d="M65 5 C 75 30, 55 40, 65 55" fill="#fbcfe8"/>
+<path d="M35 5 C 25 30, 45 40, 35 55" stroke="#9ca3af" stroke-width="4" stroke-linecap="round"/>
+<path d="M65 5 C 75 30, 55 40, 65 55" stroke="#9ca3af" stroke-width="4" stroke-linecap="round"/>
+<circle cx="40" cy="50" r="4" fill="black"/>
+<circle cx="60" cy="50" r="4" fill="black"/>
+<path d="M48 60 L 52 60" stroke="black" stroke-width="3" stroke-linecap="round"/>
+<path d="M50 60 C 45 65, 55 65, 50 60" stroke="black" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  // Lion
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#f59e0b"/>
+<circle cx="50" cy="50" r="35" fill="#fcd34d"/>
+<circle cx="40" cy="48" r="4" fill="black"/>
+<circle cx="60" cy="48" r="4" fill="black"/>
+<path d="M48 60 L 52 60 L 50 55 Z" fill="black"/>
+<path d="M40 70 C 50 75, 60 75, 70 70" stroke="black" stroke-width="3" stroke-linecap="round"/>
+</svg>`,
+
+  // Frog
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#84cc16"/>
+<circle cx="35" cy="35" r="15" fill="#f0fdf4"/>
+<circle cx="65" cy="35" r="15" fill="#f0fdf4"/>
+<circle cx="38" cy="38" r="6" fill="black"/>
+<circle cx="62" cy="38" r="6" fill="black"/>
+<path d="M30 65 C 50 85, 70 65, 30 65" stroke="black" stroke-width="4" stroke-linecap="round"/>
+</svg>`,
+
+  // Robot
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#9ca3af"/>
+<rect x="25" y="40" width="50" height="10" fill="#4b5563"/>
+<circle cx="38" cy="45" r="5" fill="#3b82f6"/>
+<circle cx="62" cy="45" r="5" fill="#3b82f6"/>
+<rect x="35" y="60" width="30" height="5" rx="2" fill="#4b5563"/>
+<rect x="38" y="68" width="24" height="5" rx="2" fill="#4b5563"/>
+<line x1="50" y1="25" x2="50" y2="15" stroke="#4b5563" stroke-width="4" stroke-linecap="round"/>
+<circle cx="50" cy="13" r="3" fill="#ef4444"/>
+</svg>`,
+
+  // Ghost
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#e0e7ff"/>
+<path d="M25 90 V 50 C 25 30, 75 30, 75 50 V 90 L 65 80 L 55 90 L 45 80 L 35 90 Z" fill="white"/>
+<circle cx="40" cy="55" r="5" fill="black"/>
+<circle cx="60" cy="55" r="5" fill="black"/>
+<circle cx="50" cy="70" r="8" stroke="black" stroke-width="4" fill="transparent"/>
+</svg>`,
+
+  // Dog
+  `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="#f59e0b"/>
+<path d="M20 30 C 10 50, 30 70, 40 50" fill="#92400e"/>
+<path d="M80 30 C 90 50, 70 70, 60 50" fill="#92400e"/>
+<ellipse cx="50" cy="65" rx="30" ry="20" fill="#fed7aa"/>
+<circle cx="42" cy="50" r="5" fill="black"/>
+<circle cx="58" cy="50" r="5" fill="black"/>
+<path d="M50 60 L 50 70" stroke="black" stroke-width="4" stroke-linecap="round"/>
+<path d="M45 75 C 50 80, 55 80, 60 75" stroke="black" stroke-width="4" stroke-linecap="round"/>
 </svg>`,
 ];

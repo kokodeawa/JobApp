@@ -214,7 +214,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
         </div>
       </div>
 
-      <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg">
+      <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-neutral-100 border-b pb-4 border-gray-200 dark:border-neutral-700">Explorar Historial</h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Budget List */}
@@ -227,7 +227,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                 frequencies.map(freq => (
                   groupedBudgets[freq] && groupedBudgets[freq].length > 0 && (
                     <div key={freq}>
-                        <h4 className="text-base font-semibold text-blue-600 dark:text-blue-400 capitalize mb-2 sticky top-0 bg-white dark:bg-neutral-800 py-1">{pluralFrequencyLabels[freq]}</h4>
+                        <h4 className="text-base font-semibold text-blue-600 dark:text-blue-400 capitalize mb-2 sticky top-0 bg-white/80 dark:bg-neutral-800/80 py-1">{pluralFrequencyLabels[freq]}</h4>
                         <div className="grid grid-cols-1 gap-3">
                             {groupedBudgets[freq].map(budget => (
                               <div 

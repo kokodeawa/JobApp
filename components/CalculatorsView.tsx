@@ -62,7 +62,7 @@ const TimeToGoalCalculator: React.FC = () => {
     ];
 
     return (
-        <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg">
+        <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 mb-1">Calculadora de Metas</h2>
             <p className="text-gray-500 dark:text-neutral-400 mb-6">Estima cuánto tiempo te tomará alcanzar tu objetivo de ahorro.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -146,7 +146,7 @@ const WorkCalculator: React.FC = () => {
     ];
 
     return (
-         <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg">
+         <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 mb-1">Calculadora Laboral</h2>
             <p className="text-gray-500 dark:text-neutral-400 mb-6">Calcula tu pago total basado en tu sueldo base y horas trabajadas.</p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -235,7 +235,7 @@ const ReturnTimeCalculator: React.FC = () => {
     }, [startDate, startTime, durationHours, durationMinutes]);
 
      return (
-         <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg">
+         <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 mb-1">Calculadora de Regreso Laboral</h2>
             <p className="text-gray-500 dark:text-neutral-400 mb-6">Determina cuándo regresar después de un permiso o descanso.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -322,7 +322,7 @@ const StandardCalculator: React.FC = () => {
     }
 
     return (
-        <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg max-w-sm mx-auto">
+        <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg max-w-sm mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 mb-4">Calculadora Estándar</h2>
             <div className="bg-gray-100 dark:bg-neutral-900/50 p-4 rounded-lg text-right text-4xl font-mono mb-4 overflow-x-auto break-all text-gray-900 dark:text-white">
                 {display}

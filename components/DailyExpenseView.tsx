@@ -414,7 +414,7 @@ export const DailyExpenseView: React.FC<DailyExpenseViewProps> = ({
 
   return (
     <>
-      <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg">
+      <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg">
         <div className="border-b pb-4 border-gray-200 dark:border-neutral-700 mb-6">
             <div className="flex flex-wrap justify-between items-center gap-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100">Rastreador de Gastos</h2>

@@ -36,7 +36,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ budgets, activeBudge
     const frequencies: PayCycleFrequency[] = ['semanal', 'quincenal', 'mensual', 'anual'];
 
     return (
-        <div className="bg-white dark:bg-neutral-800 p-6 rounded-3xl shadow-lg space-y-6 self-start">
+        <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-6 rounded-3xl shadow-lg space-y-6 self-start">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-neutral-100 border-b pb-4 border-gray-200 dark:border-neutral-700">
                 Mis Presupuestos
             </h2>
@@ -54,7 +54,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ budgets, activeBudge
                     frequencies.map(freq => (
                         groupedBudgets[freq] && groupedBudgets[freq].length > 0 && (
                             <div key={freq}>
-                                <h3 className="text-sm font-semibold text-gray-500 dark:text-neutral-400 capitalize mb-2 sticky top-0 bg-white dark:bg-neutral-800 py-1">
+                                <h3 className="text-sm font-semibold text-gray-500 dark:text-neutral-400 capitalize mb-2 sticky top-0 bg-white/80 dark:bg-neutral-800/80 py-1">
                                     {pluralFrequencyLabels[freq]}
                                 </h3>
                                 <div className="space-y-3">

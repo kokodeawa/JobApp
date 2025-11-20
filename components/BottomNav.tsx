@@ -16,7 +16,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
     }`;
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-neutral-700 flex justify-around items-center z-20">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-700 flex justify-around items-center z-20">
       <button onClick={() => onTabChange('dashboard')} className={navButtonClasses('dashboard')}>
         <i className="fa-solid fa-table-columns text-xl mb-1"></i>
         <span>Dashboard</span>

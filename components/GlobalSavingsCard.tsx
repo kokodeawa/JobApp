@@ -37,7 +37,7 @@ export const GlobalSavingsCard: React.FC<GlobalSavingsCardProps> = ({ value, onS
 
 
   return (
-    <div className="bg-white dark:bg-neutral-800 p-5 rounded-3xl shadow-lg flex flex-col items-start space-y-3">
+    <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-md border border-gray-200/80 dark:border-white/10 p-5 rounded-3xl shadow-lg flex flex-col items-start space-y-3">
       <div className={`text-2xl w-12 h-12 rounded-xl flex items-center justify-center bg-teal-100 dark:bg-teal-900/50 text-teal-500 dark:text-teal-400`}>
         <i className="fa-solid fa-vault"></i>
       </div>

@@ -75,7 +75,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     // Handle migration from old string-based password to new User object
     if (typeof userData === 'string') {
         if (userData === password) {
-            const migratedUser: User = { password: userData, avatarId: '0' };
+            const migratedUser: User = { password: userData, avatarId: '0', background: 'default' };
             const updatedUsers = { ...currentUsers, [username]: migratedUser };
             saveUsers(updatedUsers);
             onLogin(username);
@@ -102,7 +102,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     if (currentUsers[username]) {
       setError('Este nombre de usuario ya existe.');
     } else {
-      const newUser: User = { password, avatarId: '0' };
+      const newUser: User = { password, avatarId: '0', background: 'default' };
       const newUsers = { ...currentUsers, [username]: newUser };
       saveUsers(newUsers);
       onLogin(username);
