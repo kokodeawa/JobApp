@@ -28,6 +28,28 @@ interface CurrentPeriodSpendingProps {
   periodEndDate: Date | null;
 }
 
+interface FabActionProps {
+  buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement>, 
+  label: string, 
+  icon: string
+}
+
+const FabAction: React.FC<FabActionProps> = ({ buttonProps, label, icon }) => (
+    <div className="flex items-center gap-3 w-max justify-end">
+        <span className="bg-neutral-700 text-neutral-200 text-xs font-semibold px-3 py-1 rounded-md shadow-md">
+            {label}
+        </span>
+        <button 
+            {...buttonProps}
+            className="bg-neutral-200 text-neutral-800 w-10 h-10 rounded-full flex items-center justify-center shadow-md active:bg-neutral-300"
+            aria-label={label}
+        >
+            <i className={`fa-solid ${icon}`}></i>
+        </button>
+    </div>
+);
+
+
 const CurrentPeriodSpending: React.FC<CurrentPeriodSpendingProps> = ({
   spentByCategory,
   periodStartDate,
@@ -99,8 +121,10 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   
-  // State for menu
+  // State for menu & FAB
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFabVisible, setIsFabVisible] = useState(true);
+  const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
   
   // User profile state (remains in localStorage for sync access)
   const [userProfile, setUserProfile] = useState<User | null>(null);
@@ -185,8 +209,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
 
             } catch (error) {
                 console.error("Failed to load user data from storage. Starting with a clean state.", error);
-                // Even on error, we must stop loading to not block the UI.
-                // The app will proceed with an empty state.
             } finally {
                 setIsLoading(false);
             }
@@ -435,7 +457,6 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     if (activeCycleConfig && periodStartDate && periodEndDate) {
       const allExpensesInCycle: { [date: string]: DailyExpense[] } = { ...currentDailyExpenses };
 
-      // Add future expenses to the daily list for calculation
       for (const fe of currentFutureExpenses) {
         let occurrenceDate = new Date(`${fe.startDate}T00:00:00`);
         const feEndDate = fe.endDate ? new Date(fe.endDate) : null;
@@ -485,7 +506,7 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
       };
 
       handleSaveNewBudget(newBudget);
-      setActiveTab('history'); // Navigate to history to see the new budget
+      setActiveTab('history');
     }
   };
 
@@ -493,17 +514,63 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
     if (!userProfile?.background || userProfile.background === 'default') return null;
     if (userProfile.background.startsWith('data:')) return userProfile.background;
     switch(userProfile.background) {
-        case 'beach': return 'https://images.unsplash.com/photo-1507525428034-b723a996f6ea?q=80&w=1080&auto=format&fit=crop';
-        case 'snow': return 'https://images.unsplash.com/photo-1551582045-6ec9c11d8697?q=80&w=1080&auto=format&fit=crop';
-        case 'city': return 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?q=80&w=1080&auto=format&fit=crop';
+        case 'bg1': return 'https://images.unsplash.com/photo-1554147090-e1221a04a025?w=1080&auto=format&fit=crop';
+        case 'bg2': return 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1080&auto=format&fit=crop';
+        case 'bg3': return 'https://images.unsplash.com/photo-1502691876148-a84978e59af8?w=1080&auto=format&fit=crop';
+        case 'bg4': return 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1080&auto=format&fit=crop';
+        case 'bg5': return 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1080&auto=format&fit=crop';
+        case 'bg6': return 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1080&auto=format&fit=crop';
+        case 'bg7': return 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=1080&auto=format&fit=crop';
+        case 'bg8': return 'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=1080&auto=format&fit=crop';
         default: return null;
     }
   }, [userProfile?.background]);
 
   const backgroundActive = !!backgroundUrl;
 
+  // Scroll effect for FAB
+  useEffect(() => {
+    // Only apply scroll effect on dashboard
+    if (activeTab !== 'dashboard') {
+      setIsFabVisible(true); // Ensure it's visible if we switch back
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      // Hide when scrolling down, show when scrolling up.
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setIsFabVisible(false);
+        setIsFabMenuOpen(false); // Also close menu on scroll
+      } else {
+        setIsFabVisible(true);
+      }
+      lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeTab]); // Re-run effect when tab changes
+
+  const handleAddFutureExpense = () => {
+      if (!activeCycleId) {
+          alert('Por favor, crea o selecciona un calendario primero para añadir un gasto planificado.');
+          setPendingAction('add_cycle');
+          setActiveTab('expenses');
+      } else {
+          setPendingAction('add_future_expense');
+          setActiveTab('expenses');
+      }
+  };
+
+  const FAB_ACTIONS = [
+    { id: 'add_budget', label: 'Presupuesto Rápido', icon: 'fa-file-invoice-dollar', action: handleCreateNewBudget },
+    { id: 'add_cycle', label: 'Crear Calendario', icon: 'fa-calendar-plus', action: () => { setPendingAction('add_cycle'); setActiveTab('expenses'); } },
+    { id: 'add_future_expense', label: 'Gasto Planificado', icon: 'fa-clock', action: handleAddFutureExpense },
+  ];
+
   if (isLoading) {
-    return null; // The index.html spinner is showing.
+    return null;
   }
 
   return (
@@ -514,7 +581,7 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
                 className="absolute inset-0 bg-cover bg-center transition-all duration-500"
                 style={{ backgroundImage: `url(${backgroundUrl})` }}
                 />
-                <div className="absolute inset-0 bg-black/50" />
+                <div className={`absolute inset-0 transition-colors duration-500 ${theme === 'dark' ? 'bg-black/50' : 'bg-transparent'}`} />
             </div>
         )}
         <div className={`text-gray-900 dark:text-neutral-100 min-h-screen transition-colors duration-300 ${backgroundActive ? 'bg-transparent' : 'bg-gray-50 dark:bg-neutral-900'}`}>
@@ -587,6 +654,32 @@ export const MainApp: React.FC<MainAppProps> = ({ currentUser, onLogout }) => {
                 )}
             </main>
             
+            {activeTab === 'dashboard' && (
+              <div className={`fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 transition-all duration-300 ${isFabVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}>
+                <div className="relative flex flex-col items-end gap-3">
+                    <div className={`transition-all duration-300 ease-in-out flex flex-col items-end gap-3 ${isFabMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          {FAB_ACTIONS.map(action => (
+                              <FabAction 
+                                  key={action.id}
+                                  label={action.label} 
+                                  icon={action.icon}
+                                  buttonProps={{ onClick: () => { action.action(); setIsFabMenuOpen(false); } }} 
+                              />
+                          ))}
+                    </div>
+                    <button 
+                        onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}
+                        className="bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform duration-300"
+                        aria-haspopup="true"
+                        aria-expanded={isFabMenuOpen}
+                        aria-label="Abrir menú de acciones rápidas"
+                    >
+                        <i className={`fa-solid ${isFabMenuOpen ? 'fa-times' : 'fa-plus'} text-2xl transition-transform duration-300 ${isFabMenuOpen ? 'rotate-90' : ''}`}></i>
+                    </button>
+                </div>
+              </div>
+            )}
+
             <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
 
             <BudgetEditorModal

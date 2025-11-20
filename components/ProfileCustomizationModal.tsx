@@ -57,9 +57,14 @@ export const ProfileCustomizationModal: React.FC<ProfileCustomizationModalProps>
 
   const backgrounds = [
     { id: 'default', label: 'Por Defecto', content: <i className="fa-solid fa-ban text-2xl text-gray-400 dark:text-neutral-500"></i> },
-    { id: 'beach', label: 'Galápagos', url: 'https://images.unsplash.com/photo-1507525428034-b723a996f6ea?w=400&auto=format&fit=crop' },
-    { id: 'snow', label: 'Rusia', url: 'https://images.unsplash.com/photo-1551582045-6ec9c11d8697?q=80&w=400&auto=format&fit=crop' },
-    { id: 'city', label: 'Tokio', url: 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?q=80&w=400&auto=format&fit=crop' },
+    { id: 'bg1', label: 'Fondo 1', url: 'https://images.unsplash.com/photo-1554147090-e1221a04a025?w=400&auto=format&fit=crop' },
+    { id: 'bg2', label: 'Fondo 2', url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&auto=format&fit=crop' },
+    { id: 'bg3', label: 'Fondo 3', url: 'https://images.unsplash.com/photo-1502691876148-a84978e59af8?w=400&auto=format&fit=crop' },
+    { id: 'bg4', label: 'Fondo 4', url: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=400&auto=format&fit=crop' },
+    { id: 'bg5', label: 'Fondo 5', url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400&auto=format&fit=crop' },
+    { id: 'bg6', label: 'Fondo 6', url: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&auto=format&fit=crop' },
+    { id: 'bg7', label: 'Fondo 7', url: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=400&auto=format&fit=crop' },
+    { id: 'bg8', label: 'Fondo 8', url: 'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=400&auto=format&fit=crop' },
   ];
 
   return (
@@ -101,21 +106,28 @@ export const ProfileCustomizationModal: React.FC<ProfileCustomizationModalProps>
                 Elige tu Fondo
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                {backgrounds.map(bg => (
-                    <BackgroundOption key={bg.id} onClick={() => onSelectBackground(bg.id)} label={bg.label} isSelected={currentBackground === bg.id} bgUrl={bg.url}>
-                        {bg.content}
-                    </BackgroundOption>
-                ))}
-                 <div className="text-center">
-                    <label htmlFor="custom-bg-upload" className={`cursor-pointer aspect-video w-full rounded-lg transition-all duration-200 flex flex-col items-center justify-center bg-gray-200 dark:bg-neutral-700 ${currentBackground.startsWith('data:') ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 dark:ring-neutral-600 hover:ring-blue-400'}`}>
-                        <i className="fa-solid fa-upload text-2xl text-gray-500 dark:text-neutral-400"></i>
-                    </label>
-                    <input id="custom-bg-upload" type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-                    <p className="text-xs mt-1 font-semibold text-gray-700 dark:text-neutral-300">Personalizado</p>
-                </div>
+              {backgrounds.map(bg => (
+                <BackgroundOption
+                  key={bg.id}
+                  label={bg.label}
+                  isSelected={currentBackground === bg.id}
+                  bgUrl={bg.url}
+                  onClick={() => onSelectBackground(bg.id)}
+                >
+                  {bg.content}
+                </BackgroundOption>
+              ))}
+              <div className="text-center">
+                <label htmlFor="custom-bg-upload" className={`aspect-video w-full rounded-lg transition-all duration-200 flex items-center justify-center cursor-pointer ${currentBackground.startsWith('data:') ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 dark:ring-neutral-600 hover:ring-blue-400'}`}>
+                    <div className="text-center">
+                        <i className="fa-solid fa-upload text-2xl text-gray-400 dark:text-neutral-500"></i>
+                    </div>
+                    <input type="file" id="custom-bg-upload" className="hidden" accept="image/*" onChange={handleFileChange} />
+                </label>
+                <p className="text-xs mt-1 font-semibold text-gray-700 dark:text-neutral-300">Personalizado</p>
+              </div>
             </div>
         </div>
-
         <div className="mt-6 flex justify-end border-t border-gray-200 dark:border-neutral-700 pt-4">
           <button onClick={onClose} className="px-6 py-2 rounded-lg bg-gray-200 text-gray-800 dark:bg-neutral-600 dark:text-neutral-200 font-semibold">
             Cerrar
